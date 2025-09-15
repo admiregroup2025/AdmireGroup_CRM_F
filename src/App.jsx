@@ -4,7 +4,7 @@ import SignIn from './newComponents/loginSection/SignIn'
 const App = () => {
   return (
     <div>
-     {/* <SignIn/> */}
+     <SignIn/>
      <ForgotPassword />
     </div>
   )
