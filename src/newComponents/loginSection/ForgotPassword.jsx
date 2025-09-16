@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [error, setError] = useState("");
-    const [success, setSuccess] = useState("");
     const emailInputRef = useRef(null);
+    const navigate = useNavigate();
 
     const validateEmail = (email) => {
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -15,7 +15,6 @@ const ForgotPassword = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         setError("");
-        setSuccess("");
 
         if (!email.trim()) {
             setError("Email is required");
@@ -30,7 +29,7 @@ const ForgotPassword = () => {
         }
 
         setTimeout(() => {
-            setSuccess("A password reset link has been sent to your email.");
+            navigate("/reset-password");
             setEmail("");
         }, 1000);
     };
@@ -113,13 +112,6 @@ const ForgotPassword = () => {
                         >
                             Send Reset Link
                         </button>
-
-                        {success && (
-                            <div className="mt-4 flex items-center justify-center gap-2 font-medium text-green-600">
-                                <CheckCircle2 className="h-5 w-5" />
-                                <span>{success}</span>
-                            </div>
-                        )}
 
                         <div className="mt-6 text-center">
                             <Link
