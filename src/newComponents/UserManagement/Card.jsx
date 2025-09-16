@@ -1,16 +1,16 @@
-import React from 'react'
+import React from "react";
 
-const Card = ({ title, icon, value, description}) => {
-  return (
-    <div className='w-fit border border-gray-500 rounded-md p-3 bg-[#ffffff]'>
-        <div className='w-full flex justify-between gap-6 mb-6'>
-            <div className='text-black'>{title}</div>
-            <div className='text-gray-600'>{icon}</div>
+const Card = ({ title, icon, value, description }) => {
+    return (
+        <div className="w-fit rounded-md border border-gray-500 bg-[#ffffff] p-3">
+            <div className="mb-6 flex w-full justify-between gap-6">
+                <div className="text-black">{title}</div>
+                <div className="text-gray-600">{icon}</div>
+            </div>
+            <div className="text-lg font-semibold text-black">{value}</div>
+            <div className="text-md text-gray-500">{description}</div>
         </div>
-        <div className='text-black text-lg font-semibold'>{value}</div>
-        <div className='text-gray-500 text-md'>{description}</div>
-    </div>
-  )
-}
+    );
+};
 
-export default Card
+export default Card;
