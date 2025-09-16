@@ -9,6 +9,12 @@ import ForgotPassword from "./newComponents/loginSection/ForgotPassword.jsx";
 import ScreenLayout from "./newComponents/ScreenLayout.jsx";
 import ChangePassword from "./newComponents/loginSection/ChangePassword.jsx";
 import ResetLink from "./newComponents/loginSection/ResetLink.jsx";
+import MainLeadManagement from "./newComponents/leadManagement/MainLeadManagement.jsx";
+import MainUserManagement from "./newComponents/userManagement/MainUserManagement.jsx";
+import MainAttendance from "./newComponents/attendance/MainAttendance.jsx";
+import MainAllCompanies from "./newComponents/allCompanies/MainAllCompanies.jsx";
+import MainSettings from "./newComponents/Settings/MainSettings.jsx";
+import MainDashboard from "./newComponents/dashboard/MainDashboard.jsx";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -20,37 +26,44 @@ const router = createBrowserRouter([
     },
 
     {
-        path: "/dashboard",
+        path: "/",
         element: <ScreenLayout />,
+        children: [
+            {
+                path: "/dashboard",
+                element: <MainDashboard />,
+            },
+            {
+                path: "/lead-management",
+                element: <MainLeadManagement />,
+            },
+            {
+                path: "/user-management",
+                element: <MainUserManagement />,
+            },
+            {
+                path: "/attendance",
+                element: <MainAttendance />,
+            },
+            {
+                path: "/companies",
+                element: <MainAllCompanies />,
+            },
+            {
+                path: "/settings",
+                element: <MainSettings />,
+            },
+        ],
     },
-    {
-        path: "/lead-management",
-        element: <ScreenLayout />,
-    },
-    {
-        path: "/user-management",
-        element: <ScreenLayout />,
-    },
-    {
-        path: "/attendance",
-        element: <ScreenLayout />,
-    },
-    {
-        path: "/companies",
-        element: <ScreenLayout />,
-    },
-    {
-        path: "/settings",
-        element: <ScreenLayout />,
-    },
+
     {
         path: "reset-password",
         element: <ResetLink />,
     },
     {
-        path:"change-password",
-        element:<ChangePassword/>
-    }
+        path: "change-password",
+        element: <ChangePassword />,
+    },
 ]);
 
 createRoot(document.getElementById("root")).render(<RouterProvider router={router} />);

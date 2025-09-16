@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import MainComponent from "./MainComponent";
+import { Outlet } from "react-router-dom";
 
 const ScreenLayout = () => {
     return (
@@ -11,7 +12,7 @@ const ScreenLayout = () => {
             </div>
             <div className="flex flex-col">
                 <Header />
-                <MainComponent />
+                <Outlet />
             </div>
         </div>
     );
