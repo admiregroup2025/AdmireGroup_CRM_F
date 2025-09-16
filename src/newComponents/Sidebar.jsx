@@ -15,23 +15,27 @@ const Sidebar = () => {
     ];
 
     return (
-        <div className="w-[18vw] bg-white h-screen shadow-md flex flex-col">
+        <div className="flex h-screen w-[18vw] flex-col bg-white shadow-lg">
             {/* Logo */}
-            <div className="h-16 flex items-center justify-center bg-[#000000] text-white text-2xl font-bold">
-                CRM Pro
+            <div className="flex h-[12vh] items-center gap-3 border-b-2 px-4">
+                <div className="flex size-12 items-center justify-center rounded-lg bg-black text-[25px] font-semibold text-white">C</div>
+                <div className="text-[25px] font-semibold text-slate-600">CRM Pro</div>
             </div>
 
             {/* Navigation Items */}
             <nav className="mt-8 flex-1">
                 <ul>
                     {sidebarItems.map((item) => (
-                        <li key={item.id} className="mb-2">
+                        <li
+                            key={item.id}
+                            className="mb-2 px-3"
+                        >
                             <NavLink
                                 to={item.url}
                                 className={({ isActive }) =>
                                     isActive
-                                        ? "flex items-center gap-3 px-4 py-3 text-white bg-[#000000] rounded-md transition duration-200"
-                                        : "flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md transition duration-200"
+                                        ? "flex items-center gap-3 rounded-lg bg-[#000000] px-4 py-3 text-white transition duration-200"
+                                        : "flex items-center gap-3 rounded-lg px-4 py-3 text-gray-700 transition duration-200 hover:bg-gray-100"
                                 }
                             >
                                 {item.icon}

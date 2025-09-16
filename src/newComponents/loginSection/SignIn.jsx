@@ -108,12 +108,10 @@ const SignIn = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Enter your email"
-                                    className={`w-full rounded-lg border bg-[#FBFDFF] px-4 py-3 text-gray-700 placeholder-gray-400 transition focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300 ${
+                                    className={`w-full rounded-lg border bg-[#FBFDFF] px-4 py-3 text-gray-700 placeholder-gray-400 transition focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-gray-300 ${
                                         errors.email ? "border-red-500" : "border-gray-300"
                                     }`}
                                     required
-                                    aria-invalid={errors.email ? "true" : "false"}
-                                    aria-describedby="email-error"
                                 />
                                 {errors.email && (
                                     <p
@@ -141,7 +139,7 @@ const SignIn = () => {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                         placeholder="Enter your password"
-                                        className={`w-full rounded-lg border bg-[#FBFDFF] px-4 py-3 pr-10 text-gray-700 placeholder-gray-400 transition focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-300 ${
+                                        className={`w-full rounded-lg border bg-[#FBFDFF] px-4 py-3 pr-10 text-gray-700 placeholder-gray-400 transition focus:border-orange-500 focus:outline-none focus:ring-4 focus:ring-gray-300 ${
                                             errors.password ? "border-red-500" : "border-gray-300"
                                         }`}
                                         required
@@ -167,7 +165,7 @@ const SignIn = () => {
                             {/* Submit Button */}
                             <button
                                 type="submit"
-                                className="w-full rounded-lg bg-black py-3 font-medium text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-orange-400"
+                                className="w-full rounded-lg bg-black py-3 font-medium text-white transition hover:scale-[102%] hover:bg-gray-800 duration-300 focus:outline-none"
                             >
                                 Login
                             </button>
