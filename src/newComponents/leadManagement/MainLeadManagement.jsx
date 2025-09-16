@@ -1,7 +1,7 @@
 import { cardData } from "./data.js";
 import MyCard from "../UserManagement/MyCards.jsx";
-import { SearchLead } from "./SearchLead.jsx";
-import { SearchStatus } from "./SearchStatus.jsx";
+import  SearchLead  from "./SearchLead.jsx";
+import  SearchStatus  from "./SearchStatus.jsx";
 import AddLead from "./AddLead.jsx";
 import LeadTable from "./LeadTable.jsx";
 

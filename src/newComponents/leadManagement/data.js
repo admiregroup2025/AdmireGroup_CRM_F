@@ -1,25 +1,25 @@
 export const cardData = [
   {
     title: "Total Leads",
-    icon: (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign-icon lucide-dollar-sign"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>),
+    icon: "image",
     value: "1,234",
     description: "+12% from last month"
   },
   {
     title: "Hot Leads",
-    icon: (<div className="rounded-full w-4 h-4 bg-red-500"></div>),
+    icon:"image",
     value: 89,
     description: "+5% from last week"
   },
   {
     title: "Conversion Rate",
-    icon: (<div className="rounded-full w-4 h-4 bg-green-500"></div>),
+    icon: "image",
     value: '23.5%',
     description: "+2.1% from last month"
   },
   {
     title: "Total Value",
-    icon: (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign-icon lucide-dollar-sign"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>),
+    icon: "image",
     value: '$2.4M',
     description: "+18% from last month"
   }
