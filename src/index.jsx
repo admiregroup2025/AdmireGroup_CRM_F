@@ -8,6 +8,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import ForgotPassword from "./newComponents/loginSection/ForgotPassword.jsx";
 import ScreenLayout from "./newComponents/ScreenLayout.jsx";
 import ChangePassword from "./newComponents/loginSection/ChangePassword.jsx";
+import ResetLink from "./newComponents/loginSection/ResetLink.jsx";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -43,8 +44,8 @@ const router = createBrowserRouter([
         element: <ScreenLayout />,
     },
     {
-        path: "change-password",
-        element: <ChangePassword />,
+        path: "reset-password",
+        element: <ResetLink />,
     },
     {
         path:"change-password",

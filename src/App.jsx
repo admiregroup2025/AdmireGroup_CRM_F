@@ -5,9 +5,8 @@ import SignIn from './newComponents/loginSection/SignIn'
 const App = () => {
   return (
     <div>
-     {/* <SignIn/> */}
-     {/* <ForgotPassword /> */}
-     <ResetLink />
+     <SignIn/>
+     
     </div>
   )
 }
