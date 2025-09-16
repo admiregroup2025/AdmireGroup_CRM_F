@@ -1,5 +1,5 @@
 import React from "react";
-import MyCards from "./MyCards.jsx";
+// import MyCards from "./MyCards.jsx";
 import { SearchUser } from "./SearchUser.jsx";
 import { SearchRole } from "./SearchRoles.jsx";
 import AddUser from "./AddUser.jsx";
@@ -41,7 +41,7 @@ const MainUserManagement = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {cardData.map((card, index) => (
                     <MyCards
                         key={`card-${index}`}
@@ -51,7 +51,7 @@ const MainUserManagement = () => {
                         description={card.description}
                     />
                 ))}
-            </div>
+            </div> */}
 
             {/* Controls Section */}
             <div className="mb-6 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
