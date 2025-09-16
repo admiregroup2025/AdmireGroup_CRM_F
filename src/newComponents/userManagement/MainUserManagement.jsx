@@ -4,10 +4,11 @@ import Card from "./Card";
 import SearchUser from "./SearchUser.jsx";
 import SearchRole from "./SearchRoles.jsx";
 import AddUser from "./AddUser.jsx";
+import UserTable from "./UserTable.jsx";
 
 const MainUserManagement = () => {
     return (
-        <div>
+        <div className="p-8 bg-[#f8f9fa]">
             <div className="flex gap-4">
                 {cardData.map((card, ind) => {
                     return (
@@ -21,13 +22,15 @@ const MainUserManagement = () => {
                 })}
             </div>
 
-            <div className="flex w-full justify-between">
+            <div className="flex w-full justify-between my-4">
                 <div className="flex gap-3">
                     <SearchUser />
                     <SearchRole />
                 </div>
                 <AddUser />
             </div>
+
+            <UserTable />
         </div>
     );
 };

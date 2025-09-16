@@ -2,7 +2,7 @@ import React from 'react'
 
 const Card = ({ title, icon, value, description}) => {
   return (
-    <div className='w-fit border border-gray-500 rounded-md p-3'>
+    <div className='w-fit border border-gray-500 rounded-md p-3 bg-[#ffffff]'>
         <div className='w-full flex justify-between gap-6 mb-6'>
             <div className='text-black'>{title}</div>
             <div className='text-gray-600'>{icon}</div>
