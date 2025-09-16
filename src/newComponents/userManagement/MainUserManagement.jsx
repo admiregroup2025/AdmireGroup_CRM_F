@@ -1,39 +1,39 @@
 import React from "react";
-import Card from "./Card.jsx";
+import MyCards from "./MyCards.jsx";
 import { SearchUser } from "./SearchUser.jsx";
 import { SearchRole } from "./SearchRoles.jsx";
 import AddUser from "./AddUser.jsx";
 import UserTable from "./UserTable.jsx";
 
 const MainUserManagement = () => {
-  const cardData = [
-  {
-    title: "Total Users",
-    icon: "icon",
-    value: 89,
-    description: "+5 new this month"
-  },
-  {
-    title: "Active Users",
-    icon: "icon",
-    value: 84,
-    description: "94.4% active rate"
-  },
-  {
-    title: "Admins",
-    icon: "icon",
-    value: 3,
-    description: "System administrators"
-  },
-  {
-    title: "New This Week",
-    icon: "icon",
-    value: 7,
-    description: "+2 from last week"
-  }
-];
+    const cardData = [
+        {
+            title: "Total Users",
+            icon: "icon",
+            value: 89,
+            description: "+5 new this month",
+        },
+        {
+            title: "Active Users",
+            icon: "icon",
+            value: 84,
+            description: "94.4% active rate",
+        },
+        {
+            title: "Admins",
+            icon: "icon",
+            value: 3,
+            description: "System administrators",
+        },
+        {
+            title: "New This Week",
+            icon: "icon",
+            value: 7,
+            description: "+2 from last week",
+        },
+    ];
     return (
-        <div className="bg-[#f8f9fa] p-8 max-h-[82vh] overflow-y-auto">
+        <div className="max-h-[82vh] overflow-y-auto bg-[#f8f9fa] p-8">
             {/* Header Section */}
             <div className="mb-6">
                 <h1 className="mb-2 text-2xl font-bold text-gray-900">User Management</h1>
@@ -43,7 +43,7 @@ const MainUserManagement = () => {
             {/* Stats Cards */}
             <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {cardData.map((card, index) => (
-                    <Card
+                    <MyCards
                         key={`card-${index}`}
                         title={card.title}
                         value={card.value}
