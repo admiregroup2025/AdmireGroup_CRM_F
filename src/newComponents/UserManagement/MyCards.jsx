@@ -2,7 +2,7 @@ import React from "react";
 
 const MyCards = ({ title, icon, value, description }) => {
     return (
-        <div className="w-fit rounded-md border border-gray-500 bg-[#ffffff] p-3">
+        <div className="w-full rounded-md border border-gray-500 bg-[#ffffff] p-3">
             <div className="mb-6 flex w-full justify-between gap-6">
                 <div className="text-black">{title}</div>
                 <div className="text-gray-600">{icon}</div>
