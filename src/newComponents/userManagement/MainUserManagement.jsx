@@ -1,5 +1,4 @@
 import React from "react";
-import { cardData } from "./data.js";
 import Card from "./Card.jsx";
 import { SearchUser } from "./SearchUser.jsx";
 import { SearchRole } from "./SearchRoles.jsx";
@@ -7,6 +6,32 @@ import AddUser from "./AddUser.jsx";
 import UserTable from "./UserTable.jsx";
 
 const MainUserManagement = () => {
+  const cardData = [
+  {
+    title: "Total Users",
+    icon: "icon",
+    value: 89,
+    description: "+5 new this month"
+  },
+  {
+    title: "Active Users",
+    icon: "icon",
+    value: 84,
+    description: "94.4% active rate"
+  },
+  {
+    title: "Admins",
+    icon: "icon",
+    value: 3,
+    description: "System administrators"
+  },
+  {
+    title: "New This Week",
+    icon: "icon",
+    value: 7,
+    description: "+2 from last week"
+  }
+];
     return (
         <div className="bg-[#f8f9fa] p-8 max-h-[82vh] overflow-y-auto">
             {/* Header Section */}
