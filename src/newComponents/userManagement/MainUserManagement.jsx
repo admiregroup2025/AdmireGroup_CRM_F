@@ -1,6 +1,6 @@
 import React from "react";
 import { cardData } from "./data.js";
-import Card from "./Card";
+import Card from "./Card.jsx";
 import { SearchUser } from "./SearchUser.jsx";
 import { SearchRole } from "./SearchRoles.jsx";
 import AddUser from "./AddUser.jsx";
