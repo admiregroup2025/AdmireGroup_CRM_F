@@ -1,170 +1,268 @@
-import { ChartNoAxesCombined, Clock4, UserCheck, Users } from "lucide-react";
+import { BarChart3, Clock4, UserCheck, Users, TrendingUp, TrendingDown } from "lucide-react";
 import React from "react";
-import { leads, attendanceData } from "../tempData/dashboardData/Leadsdata.js";
+import { useNavigate } from "react-router-dom";
+
+// Mock data since original imports aren't available
+const leads = [
+  { id: 1, Profile: "JD", name: "John Doe", email: "john@example.com", status: "Hot", amount: "$12,000" },
+  { id: 2, Profile: "SM", name: "Sarah Miller", email: "sarah@example.com", status: "Warm", amount: "$8,500" },
+  { id: 3, Profile: "MJ", name: "Mike Johnson", email: "mike@example.com", status: "Cold", amount: "$5,200" },
+  { id: 4, Profile: "AL", name: "Anna Lee", email: "anna@example.com", status: "Hot", amount: "$15,300" },
+  { id: 5, Profile: "RW", name: "Robert Wilson", email: "robert@example.com", status: "Warm", amount: "$9,800" },
+];
+
+const attendanceData = [
+  { id: 1, name: "John Smith", time: "09:00 AM", status: "Present" },
+  { id: 2, name: "Jane Doe", time: "09:15 AM", status: "Present" },
+  { id: 3, name: "Mike Brown", time: "Late", status: "Present" },
+  { id: 4, name: "Sarah Davis", time: null, status: "Absent" },
+  { id: 5, name: "Tom Wilson", time: "08:45 AM", status: "Present" },
+];
+
+const companies = [
+  { id: 1, name: "TechCorp Solutions", deals: 12, revenue: "$45,000", status: "Active" },
+  { id: 2, name: "Digital Dynamics", deals: 8, revenue: "$32,000", status: "Active" },
+  { id: 3, name: "Innovation Labs", deals: 15, revenue: "$67,000", status: "Active" },
+  { id: 4, name: "Future Systems", deals: 6, revenue: "$28,000", status: "Inactive" },
+];
 
 const MainDashboard = () => {
-  const cards = [
-    { title: "Total Leads", value: "1,234", percentage: "+12% from last month", icon: <Users /> },
-    { title: "Total Users", value: "987", percentage: "+8% from last month", icon: <UserCheck /> },
-    { title: "Avg Time", value: "00:45", percentage: "-2% from last month", icon: <Clock4 /> },
-    { title: "Conversions", value: "76", percentage: "+5% from last month", icon: <ChartNoAxesCombined /> },
-  ];
+    // Mock navigate function for demo
+    // const navigate = (path) => console.log(`Navigating to: ${path}`);
+    const navigate = useNavigate()
+    const cards = [
+        { 
+            title: "Total Leads", 
+            value: "1,234", 
+            percentage: "+12% from last month", 
+            icon: <Users className="w-5 h-5" />,
+            trend: "up",
+            color: "text-blue-600"
+        },
+        { 
+            title: "Total Users", 
+            value: "987", 
+            percentage: "+8% from last month", 
+            icon: <UserCheck className="w-5 h-5" />,
+            trend: "up",
+            color: "text-green-600"
+        },
+        { 
+            title: "Avg Time", 
+            value: "00:45", 
+            percentage: "-2% from last month", 
+            icon: <Clock4 className="w-5 h-5" />,
+            trend: "down",
+            color: "text-orange-600"
+        },
+        { 
+            title: "Conversions", 
+            value: "76", 
+            percentage: "+5% from last month", 
+            icon: <BarChart3 className="w-5 h-5" />,
+            trend: "up",
+            color: "text-purple-600"
+        },
+    ];
 
-  return (
-    <div className="flex-1 px-4 py-4">
-      {/* Top cards — responsive grid: 1 col mobile, 2 cols small, 4 cols large */}
-      <div className="my-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {cards.map((item, index) => (
-          <div key={index} className="w-full rounded-md">
-            <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-              <div className="mb-4 flex items-center justify-between">
-                <h3 className="text-sm font-semibold text-slate-900">{item.title}</h3>
+    const getStatusColor = (status) => {
+        switch (status.toLowerCase()) {
+            case "hot": return "bg-red-500 hover:bg-red-600";
+            case "warm": return "bg-orange-500 hover:bg-orange-600";
+            case "cold": return "bg-blue-500 hover:bg-blue-600";
+            case "present": return "bg-green-500 hover:bg-green-600";
+            case "absent": return "bg-red-500 hover:bg-red-600";
+            case "active": return "bg-emerald-500 hover:bg-emerald-600";
+            case "inactive": return "bg-gray-500 hover:bg-gray-600";
+            default: return "bg-gray-500 hover:bg-gray-600";
+        }
+    };
 
-                <div className="flex h-7 w-7 items-center justify-center rounded-md text-gray-500">{item.icon}</div>
-              </div>
-
-              <div>
-                <div className="text-3xl font-semibold leading-tight text-slate-900">{item.value}</div>
-                <div className="mt-1 text-sm font-medium text-gray-500">{item.percentage}</div>
-              </div>
+    return (
+        <div className="flex-1 max-h-[82vh] overflow-y-auto px-4 py-6 bg-gray-50">
+            {/* Header */}
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
+                <p className="text-gray-600 mt-1">Welcome back! Here's what's happening today.</p>
             </div>
-          </div>
-        ))}
-      </div>
 
-      {/* Recent Leads & Attendance — stack on mobile, two columns on md+ */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Recent Leads */}
-        <div className="rounded-lg border px-4 py-2 shadow-md bg-white">
-          <h4 className="text-lg font-semibold mb-3">Recent Leads</h4>
-          <div className="max-h-64 overflow-y-auto pr-2 space-y-4">
-            {leads.map((item, index) => (
-              <div key={item.id ?? index} className="flex justify-between items-start">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 font-semibold text-gray-800">
-                    {item.Profile}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium text-slate-900">{item.name}</span>
-                    <span className="text-sm text-gray-400">{item.email}</span>
-                  </div>
+            {/* Top cards — improved responsive grid */}
+            <div className="mb-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                {cards.map((item, index) => (
+                    <div
+                        key={index}
+                        className="group cursor-pointer transition-all duration-200 hover:scale-105"
+                    >
+                        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${item.color} bg-opacity-10`}>
+                                    <span className={item.color}>{item.icon}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                    {item.trend === "up" ? (
+                                        <TrendingUp className="w-4 h-4 text-green-500" />
+                                    ) : (
+                                        <TrendingDown className="w-4 h-4 text-red-500" />
+                                    )}
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 className="text-sm font-medium text-gray-600 mb-1">{item.title}</h3>
+                                <div className="text-3xl font-bold text-gray-900 mb-2">{item.value}</div>
+                                <div className={`text-sm font-medium flex items-center gap-1 ${
+                                    item.trend === "up" ? "text-green-600" : "text-red-600"
+                                }`}>
+                                    {item.percentage}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {/* Recent Leads & Attendance — improved layout */}
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 mb-8">
+                {/* Recent Leads */}
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+                    <div className="px-6 py-4 border-b border-gray-100">
+                        <h4 className="text-lg font-semibold text-gray-900">Recent Leads</h4>
+                        <p className="text-sm text-gray-600 mt-1">Latest prospects and their status</p>
+                    </div>
+                    <div className="p-6">
+                        <div className="max-h-80 space-y-4 overflow-y-auto">
+                            {leads.map((item, index) => (
+                                <div
+                                    key={item.id ?? index}
+                                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 font-semibold text-white text-sm">
+                                            {item.Profile}
+                                        </div>
+                                        <div>
+                                            <span className="text-sm font-medium text-gray-900 block">{item.name}</span>
+                                            <span className="text-xs text-gray-500">{item.email}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-sm font-semibold text-gray-900">{item.amount}</span>
+                                        <button
+                                            className={`rounded-full px-3 py-1 text-xs font-semibold text-white transition-colors ${getStatusColor(item.status)}`}
+                                        >
+                                            {item.status}
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <button
-                    className={`rounded-xl px-2 py-1 text-sm font-semibold text-white ${
-                      item.status === "Hot" ? "bg-red-500" : item.status === "Warm" ? "bg-orange-500" : "bg-blue-500"
-                    }`}
-                  >
-                    {item.status}
-                  </button>
-                  <span className="text-sm text-gray-600">{item.amount}</span>
+                {/* Attendance */}
+                <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+                    <div className="px-6 py-4 border-b border-gray-100">
+                        <h4 className="text-lg font-semibold text-gray-900">Today's Attendance</h4>
+                        <p className="text-sm text-gray-600 mt-1">Team check-in status</p>
+                    </div>
+                    <div className="p-6">
+                        <div className="max-h-80 space-y-4 overflow-y-auto">
+                            {attendanceData.map((item, index) => (
+                                <div
+                                    key={item.id ?? index}
+                                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-teal-600 font-semibold text-white text-sm">
+                                            {item.name?.charAt(0)}
+                                        </div>
+                                        <div>
+                                            <span className="text-sm font-medium text-gray-900 block">{item.name}</span>
+                                            <span className="text-xs text-gray-500">
+                                                {item.time || "Not checked in"}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button
+                                        className={`rounded-full px-3 py-1 text-xs font-semibold text-white transition-colors ${getStatusColor(item.status)}`}
+                                    >
+                                        {item.status}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+            </div>
 
-        {/* Attendance */}
-        <div className="rounded-lg border px-4 py-2 shadow-md bg-white">
-          <h4 className="text-lg font-semibold mb-3">Today's Attendance</h4>
-          <div className="max-h-64 overflow-y-auto pr-2 space-y-4">
-            {attendanceData.map((item, index) => (
-              <div key={item.id ?? index} className="flex justify-between items-start">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 font-semibold text-gray-800">
-                    {item.name?.charAt(0)}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium text-slate-900">{item.name}</span>
-                    <span className="text-sm text-gray-400">{item.time ?? "Not checked in"}</span>
-                  </div>
+            {/* Companies section — improved with dynamic data */}
+            <div className="mb-8 rounded-xl border border-gray-200 bg-white shadow-sm">
+                <div className="px-6 py-4 border-b border-gray-100">
+                    <h4 className="text-lg font-semibold text-gray-900">Companies</h4>
+                    <p className="text-sm text-gray-600 mt-1">Active business partnerships</p>
                 </div>
-                <div>
-                  <button
-                    className={`rounded-md px-2 py-1 text-sm font-semibold ${item.status === "Present" ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}
-                  >
-                    {item.status}
-                  </button>
+                <div className="p-6">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                        {companies.map((company) => (
+                            <div key={company.id} className="rounded-lg border border-gray-200 bg-gray-50 p-4 hover:shadow-md transition-shadow">
+                                <div className="flex items-start justify-between mb-3">
+                                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">{company.name}</h3>
+                                    <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white ${getStatusColor(company.status)}`}>
+                                        {company.status}
+                                    </span>
+                                </div>
+                                <div className="space-y-1">
+                                    <div className="text-xs text-gray-600">{company.deals} active deals</div>
+                                    <div className="text-xl font-bold text-gray-900">{company.revenue}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+            </div>
 
-      {/* Companies row — responsive wrap */}
-      <div className="mt-4 rounded-lg border px-4 py-4 shadow-md bg-white">
-        <h4 className="text-lg font-semibold mb-4">Companies</h4>
-        <div className="flex flex-wrap gap-4">
-          {/* Example static cards — replace with your companies array if available */}
-          <div className="w-full sm:w-1/2 md:w-1/4 lg:w-1/5">
-            <div className="rounded-xl border border-gray-100 bg-white p-5">
-              <div className="mb-4 flex items-start justify-between">
-                <h3 className="text-base font-medium text-slate-900">Tech Corp</h3>
-                <span className="inline-flex items-center rounded-full bg-emerald-500 px-3 py-1 text-sm font-semibold text-white">Active</span>
-              </div>
-              <div>
-                <div className="text-sm text-gray-500">12 deals</div>
-                <div className="mt-3 text-2xl font-semibold text-slate-900">$45K</div>
-              </div>
+            {/* Quick Actions — improved design */}
+            <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+                <div className="px-6 py-4 border-b border-gray-100">
+                    <h4 className="text-lg font-semibold text-gray-900">Quick Actions</h4>
+                    <p className="text-sm text-gray-600 mt-1">Common tasks and shortcuts</p>
+                </div>
+                <div className="p-6">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                        <button
+                            onClick={() => navigate("/add-lead")}
+                            className="flex flex-col items-center justify-center h-24 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md"
+                        >
+                            <Users className="w-6 h-6 mb-2" />
+                            <span className="font-semibold">Add Lead</span>
+                        </button>
+                        <button
+                            onClick={() => navigate("/add-user")}
+                            className="flex flex-col items-center justify-center h-24 rounded-lg border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 transform hover:scale-105"
+                        >
+                            <UserCheck className="w-6 h-6 mb-2 text-gray-600" />
+                            <span className="font-semibold text-gray-700">Add User</span>
+                        </button>
+                        <button
+                            onClick={() => navigate("/clock-in-out")}
+                            className="flex flex-col items-center justify-center h-24 rounded-lg border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200 transform hover:scale-105"
+                        >
+                            <Clock4 className="w-6 h-6 mb-2 text-gray-600" />
+                            <span className="font-semibold text-gray-700">Clock In/Out</span>
+                        </button>
+                        <button
+                            onClick={() => navigate("/view-reports")}
+                            className="flex flex-col items-center justify-center h-24 rounded-lg border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 transform hover:scale-105"
+                        >
+                            <BarChart3 className="w-6 h-6 mb-2 text-gray-600" />
+                            <span className="font-semibold text-gray-700">View Reports</span>
+                        </button>
+                    </div>
+                </div>
             </div>
-          </div>
-         
-             <div className="w-full sm:w-1/2 md:w-1/4 lg:w-1/5">
-            <div className="rounded-xl border border-gray-100 bg-white p-5">
-              <div className="mb-4 flex items-start justify-between">
-                <h3 className="text-base font-medium text-slate-900">Tech Corp</h3>
-                <span className="inline-flex items-center rounded-full bg-emerald-500 px-3 py-1 text-sm font-semibold text-white">Active</span>
-              </div>
-              <div>
-                <div className="text-sm text-gray-500">12 deals</div>
-                <div className="mt-3 text-2xl font-semibold text-slate-900">$45K</div>
-              </div>
-            </div>
-          </div>
-
-           <div className="w-full sm:w-1/2 md:w-1/4 lg:w-1/5">
-            <div className="rounded-xl border border-gray-100 bg-white p-5">
-              <div className="mb-4 flex items-start justify-between">
-                <h3 className="text-base font-medium text-slate-900">Tech Corp</h3>
-                <span className="inline-flex items-center rounded-full bg-emerald-500 px-3 py-1 text-sm font-semibold text-white">Active</span>
-              </div>
-              <div>
-                <div className="text-sm text-gray-500">12 deals</div>
-                <div className="mt-3 text-2xl font-semibold text-slate-900">$45K</div>
-              </div>
-            </div>
-          </div>
-           <div className="w-full sm:w-1/2 md:w-1/4 lg:w-1/5">
-            <div className="rounded-xl border border-gray-100 bg-white p-5">
-              <div className="mb-4 flex items-start justify-between">
-                <h3 className="text-base font-medium text-slate-900">Tech Corp</h3>
-                <span className="inline-flex items-center rounded-full bg-emerald-500 px-3 py-1 text-sm font-semibold text-white">Active</span>
-              </div>
-              <div>
-                <div className="text-sm text-gray-500">12 deals</div>
-                <div className="mt-3 text-2xl font-semibold text-slate-900">$45K</div>
-              </div>
-            </div>
-          </div>
-          
-          {/* add more company cards here as needed */}
         </div>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="mt-4 rounded-lg border px-4 py-4 shadow-md bg-white">
-        <h4 className="text-lg font-semibold mb-4">Quick Actions</h4>
-        <div className="flex flex-wrap gap-4">
-          <div className="flex w-52 h-20 items-center justify-center rounded-md bg-black text-white">+ Add Lead</div>
-          <div className="flex w-52 h-20 items-center justify-center rounded-md border">Add User</div>
-          <div className="flex w-52 h-20 items-center justify-center rounded-md border">Clock In/Out</div>
-          <div className="flex w-52 h-20 items-center justify-center rounded-md border">View Reports</div>
-        </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default MainDashboard;

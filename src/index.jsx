@@ -15,6 +15,10 @@ import MainAttendance from "./newComponents/attendance/MainAttendance.jsx";
 import MainAllCompanies from "./newComponents/allCompanies/MainAllCompanies.jsx";
 import MainSettings from "./newComponents/Settings/MainSettings.jsx";
 import MainDashboard from "./newComponents/dashboard/MainDashboard.jsx";
+import AddLeadShortcut from "./newComponents/dashboard/AddLeadShortcut.jsx";
+import AddUserShortcut from "./newComponents/dashboard/AddUserShortcut.jsx";
+import ClockInOutShortcut from "./newComponents/dashboard/ClockInOutShortcut.jsx";
+import ViewReportsShortcut from "./newComponents/dashboard/ViewReportsShortcut.jsx";
 const router = createBrowserRouter([
     {
         path: "/",
@@ -52,6 +56,22 @@ const router = createBrowserRouter([
             {
                 path: "/settings",
                 element: <MainSettings />,
+            },
+            {
+                path: "/add-lead",
+                element: <AddLeadShortcut />,
+            },
+            {
+                path: "/add-user",
+                element: <AddUserShortcut />,
+            },
+            {
+                path: "/clock-in-out",
+                element: <ClockInOutShortcut />,
+            },
+            {
+                path: "/view-reports",
+                element: <ViewReportsShortcut />,
             },
         ],
     },
