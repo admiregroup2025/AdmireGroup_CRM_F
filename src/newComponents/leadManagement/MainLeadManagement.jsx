@@ -1,7 +1,37 @@
-import React from "react";
+import { cardData } from "./data.jsx";
+import Card from "../UserManagement/Card.jsx";
+import SearchLead from "./SearchLead.jsx";
+import SearchStatus from "./SearchStatus.jsx";
+import AddLead from "./AddLead.jsx";
+import LeadTable from "./LeadTable.jsx";
 
 const MainLeadManagement = () => {
-    return <div className="text-center text-6xl font-bold">LEAD MANAGEMENT</div>;
+    return (
+        <div className="p-8 bg-[#f8f9fa]">
+            <div className="flex gap-4">
+                {cardData.map((card, ind) => {
+                    return (
+                        <Card
+                            title={card.title}
+                            value={card.value}
+                            icon={card.icon}
+                            description={card.description}
+                        />
+                    );
+                })}
+            </div>
+
+            <div className="flex w-full justify-between my-4">
+                <div className="flex gap-3">
+                    <SearchLead />
+                    <SearchStatus />
+                </div>
+                <AddLead />
+            </div>
+
+            <LeadTable />
+        </div>
+    );
 };
 
 export default MainLeadManagement;
