@@ -1,5 +1,5 @@
 import React from "react";
-import MyCards from "./MyCards.jsx";
+import MyCard from "./MyCards.jsx";
 import { SearchUser } from "./SearchUser.jsx";
 import { SearchRole } from "./SearchRoles.jsx";
 import AddUser from "./AddUser.jsx";
@@ -33,7 +33,7 @@ const MainUserManagement = () => {
         },
     ];
     return (
-        <div className="max-h-[82vh] overflow-y-auto bg-[#f8f9fa] p-8">
+        <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8">
             {/* Header Section */}
             <div className="mb-6">
                 <h1 className="mb-2 text-2xl font-bold text-gray-900">User Management</h1>
@@ -43,7 +43,7 @@ const MainUserManagement = () => {
             {/* Stats Cards */}
             <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {cardData.map((card, index) => (
-                    <MyCards
+                    <MyCard
                         key={`card-${index}`}
                         title={card.title}
                         value={card.value}

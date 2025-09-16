@@ -79,7 +79,7 @@ const MainDashboard = () => {
     };
 
     return (
-        <div className="flex-1 max-h-[82vh] overflow-y-auto px-4 py-6 bg-gray-50">
+        <div className="flex-1 max-h-[85vh] overflow-y-auto px-4 py-6 bg-gray-50">
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>

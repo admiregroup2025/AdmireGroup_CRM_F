@@ -1,13 +1,13 @@
-import { cardData } from "./data.jsx";
+import { cardData } from "./data.js";
 import MyCard from "../UserManagement/MyCards.jsx";
-import SearchLead from "./SearchLead.jsx";
-import SearchStatus from "./SearchStatus.jsx";
+import { SearchLead } from "./SearchLead.jsx";
+import { SearchStatus } from "./SearchStatus.jsx";
 import AddLead from "./AddLead.jsx";
 import LeadTable from "./LeadTable.jsx";
 
 const MainLeadManagement = () => {
     return (
-        <div className="p-8 max-h-[85vh] overflow-y-auto bg-[#f8f9fa]">
+        <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8">
             <div className="flex gap-4">
                 {cardData.map((card, ind) => {
                     return (
@@ -21,7 +21,7 @@ const MainLeadManagement = () => {
                 })}
             </div>
 
-            <div className="flex w-full justify-between my-4">
+            <div className="my-4 flex w-full justify-between">
                 <div className="flex gap-3">
                     <SearchLead />
                     <SearchStatus />
