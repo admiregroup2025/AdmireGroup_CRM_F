@@ -23,11 +23,11 @@ const SearchLead = ({ onSearchChange, placeholder = "Search leads..." }) => {
   };
 
   return (
-    <div className="relative min-w-[280px] max-w-md">
+    <div className="relative w-full min-w-0">
       <div 
         className={`
-          flex items-center gap-3 bg-white border rounded-lg px-4 py-3 
-          transition-all duration-200 shadow-sm
+          flex items-center gap-3 bg-white border rounded-lg px-3 sm:px-4 py-2 sm:py-3 
+          transition-all duration-200 shadow-sm w-full
           ${isFocused 
             ? 'border-blue-500 ring-2 ring-blue-100 shadow-md' 
             : 'border-gray-300 hover:border-gray-400'
@@ -35,7 +35,7 @@ const SearchLead = ({ onSearchChange, placeholder = "Search leads..." }) => {
         `}
       >
         <Search 
-          className={`w-5 h-5 transition-colors ${
+          className={`w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0 transition-colors ${
             isFocused ? 'text-blue-500' : 'text-gray-400'
           }`} 
         />
@@ -47,24 +47,24 @@ const SearchLead = ({ onSearchChange, placeholder = "Search leads..." }) => {
           onBlur={() => setIsFocused(false)}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="flex-1 text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none"
+          className="flex-1 text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none min-w-0 text-sm sm:text-base"
           aria-label="Search leads"
         />
         {searchText && (
           <button
             onClick={clearSearch}
-            className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-1 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
             aria-label="Clear search"
           >
-            <X className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+            <X className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 hover:text-gray-600" />
           </button>
         )}
       </div>
       
       {/* Search suggestions or results count could go here */}
       {searchText && (
-        <div className="absolute top-full mt-1 w-full text-xs text-gray-500 px-2">
-          Searching for "{searchText}"...
+        <div className="absolute top-full mt-1 w-full text-xs text-gray-500 px-2 z-10 bg-white rounded border shadow-sm">
+          Searching for "{searchText.length > 20 ? searchText.substring(0, 20) + '...' : searchText}"
         </div>
       )}
     </div>

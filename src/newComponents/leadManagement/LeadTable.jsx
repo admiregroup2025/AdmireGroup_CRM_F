@@ -121,7 +121,7 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
   }, []);  // Sortable header component
   const SortableHeader = ({ column, children }) => (
     <th 
-      className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
+      className="px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
       onClick={() => handleSort(column)}
     >
       <div className="flex items-center gap-2">
@@ -149,9 +149,9 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
   }
 
   return (
-    <div className="space-y-4">
+    <div className="w-full max-w-full overflow-hidden">
       {/* Table Header with Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-6 py-4 border-b border-gray-200">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 px-4 sm:px-6 py-4 border-b border-gray-200">
         <div className="flex items-center gap-4">
           <h3 className="text-lg font-semibold text-gray-900">
             Leads ({filteredLeads.length})
@@ -175,149 +175,171 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
         )}
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-4 w-12">
-                <input
-                  type="checkbox"
-                  checked={selectedLeads.length === paginatedLeads.length && paginatedLeads.length > 0}
-                  onChange={handleSelectAll}
-                  className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
-                />
-              </th>
-              <SortableHeader column="name">Lead</SortableHeader>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Contact
-              </th>
-              <SortableHeader column="company">Company</SortableHeader>
-              <SortableHeader column="leadStatus">Status</SortableHeader>
-              <SortableHeader column="value">Value</SortableHeader>
-              <SortableHeader column="lastContact">Last Contact</SortableHeader>
-              <SortableHeader column="source">Source</SortableHeader>
-              <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>          <tbody className="bg-white divide-y divide-gray-200">
-            {paginatedLeads.map((lead) => (
-              <tr 
-                key={lead.id}
-                className={`hover:bg-gray-50 transition-colors ${
-                  selectedLeads.includes(lead.id) ? 'bg-blue-50' : ''
-                }`}
-              >
-                {/* Checkbox */}
-                <td className="px-6 py-4">
+      {/* Table Container */}
+      <div className="w-full overflow-x-auto">
+        <div className="inline-block min-w-full align-middle">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-3 sm:px-6 py-4 w-12">
                   <input
                     type="checkbox"
-                    checked={selectedLeads.includes(lead.id)}
-                    onChange={() => handleSelectLead(lead.id)}
+                    checked={selectedLeads.length === paginatedLeads.length && paginatedLeads.length > 0}
+                    onChange={handleSelectAll}
                     className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                   />
-                </td>
-
-                {/* Lead Name with Avatar */}
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-sm">
-                      {lead.name.charAt(0).toUpperCase()}
-                    </div>
-                    <div>
-                      <div className="font-medium text-gray-900">{lead.name}</div>
-                      <div className="text-sm text-gray-500">ID: #{lead.id}</div>
-                    </div>
-                  </div>
-                </td>
-
-                {/* Contact Information */}
-                <td className="px-6 py-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Mail className="w-4 h-4" />
-                      <button 
-                        onClick={() => handleEmail(lead.email)}
-                        className="hover:text-blue-600 hover:underline transition-colors"
-                      >
-                        {lead.email}
-                      </button>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-600">
-                      <Phone className="w-4 h-4" />
-                      <button 
-                        onClick={() => handleCall(lead.phone)}
-                        className="hover:text-blue-600 hover:underline transition-colors"
-                      >
-                        {lead.phone}
-                      </button>
-                    </div>
-                  </div>
-                </td>
-
-                {/* Company */}
-                <td className="px-6 py-4">
-                  <div className="font-medium text-gray-900">{lead.company}</div>
-                </td>
-
-                {/* Status Badge */}
-                <td className="px-6 py-4">
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(lead.leadStatus)}`}>
-                    {lead.leadStatus}
-                  </span>
-                </td>
-
-                {/* Value */}
-                <td className="px-6 py-4">
-                  <div className="font-semibold text-green-600">{lead.value}</div>
-                </td>
-
-                {/* Last Contact */}
-                <td className="px-6 py-4">
-                  <div className="text-sm text-gray-900">
-                    {new Date(lead.lastContact).toLocaleDateString()}
-                  </div>
-                </td>
-
-                {/* Source */}
-                <td className="px-6 py-4">
-                  <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 text-gray-800">
-                    {lead.source}
-                  </span>
-                </td>                {/* Actions */}
-                <td className="px-6 py-4">
+                </th>
+                <SortableHeader column="name">Lead</SortableHeader>
+                <th className="hidden sm:table-cell px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Contact
+                </th>
+                <SortableHeader column="company">Company</SortableHeader>
+                <SortableHeader column="leadStatus">Status</SortableHeader>
+                <SortableHeader column="value">Value</SortableHeader>
+                <th className="hidden lg:table-cell px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('lastContact')}>
                   <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => handleView(lead)}
-                      className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                      title="View lead details"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                    
-                    <button
-                      onClick={() => handleEdit(lead)}
-                      className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                      title="Edit lead"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                    </button>
-                    
-                    <button
-                      onClick={() => handleDelete(lead)}
-                      className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                      title="Delete lead"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-
-                    {/* More actions dropdown */}
-                    <button className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
-                      <MoreHorizontal className="w-4 h-4" />
-                    </button>
+                    <span>Last Contact</span>
+                    <ArrowUpDown className="w-4 h-4" />
                   </div>
-                </td>
+                </th>
+                <th className="hidden xl:table-cell px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors" onClick={() => handleSort('source')}>
+                  <div className="flex items-center gap-2">
+                    <span>Source</span>
+                    <ArrowUpDown className="w-4 h-4" />
+                  </div>
+                </th>
+                <th className="px-3 sm:px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>            <tbody className="bg-white divide-y divide-gray-200">
+              {paginatedLeads.map((lead) => (
+                <tr 
+                  key={lead.id}
+                  className={`hover:bg-gray-50 transition-colors ${
+                    selectedLeads.includes(lead.id) ? 'bg-blue-50' : ''
+                  }`}
+                >
+                  {/* Checkbox */}
+                  <td className="px-3 sm:px-6 py-4">
+                    <input
+                      type="checkbox"
+                      checked={selectedLeads.includes(lead.id)}
+                      onChange={() => handleSelectLead(lead.id)}
+                      className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    />
+                  </td>
+
+                  {/* Lead Name with Avatar */}
+                  <td className="px-3 sm:px-6 py-4">
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-xs sm:text-sm flex-shrink-0">
+                        {lead.name.charAt(0).toUpperCase()}
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-medium text-gray-900 text-sm sm:text-base truncate">{lead.name}</div>
+                        <div className="text-xs text-gray-500">ID: #{lead.id}</div>
+                        {/* Mobile: Show contact info */}
+                        <div className="sm:hidden mt-1 space-y-1">
+                          <div className="flex items-center gap-1 text-xs text-gray-600">
+                            <Mail className="w-3 h-3" />
+                            <span className="truncate">{lead.email}</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-gray-600">
+                            <Phone className="w-3 h-3" />
+                            <span>{lead.phone}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Contact Information - Hidden on mobile */}
+                  <td className="hidden sm:table-cell px-3 sm:px-6 py-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Mail className="w-4 h-4" />
+                        <button 
+                          onClick={() => handleEmail(lead.email)}
+                          className="hover:text-blue-600 hover:underline transition-colors truncate"
+                        >
+                          {lead.email}
+                        </button>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm text-gray-600">
+                        <Phone className="w-4 h-4" />
+                        <button 
+                          onClick={() => handleCall(lead.phone)}
+                          className="hover:text-blue-600 hover:underline transition-colors"
+                        >
+                          {lead.phone}
+                        </button>
+                      </div>
+                    </div>
+                  </td>
+
+                  {/* Company */}
+                  <td className="px-3 sm:px-6 py-4">
+                    <div className="font-medium text-gray-900 text-sm truncate">{lead.company}</div>
+                  </td>
+
+                  {/* Status Badge */}
+                  <td className="px-3 sm:px-6 py-4">
+                    <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(lead.leadStatus)}`}>
+                      {lead.leadStatus}
+                    </span>
+                  </td>
+
+                  {/* Value */}
+                  <td className="px-3 sm:px-6 py-4">
+                    <div className="font-semibold text-green-600 text-sm">{lead.value}</div>
+                  </td>
+
+                  {/* Last Contact - Hidden on small screens */}
+                  <td className="hidden lg:table-cell px-3 sm:px-6 py-4">
+                    <div className="text-sm text-gray-900">
+                      {new Date(lead.lastContact).toLocaleDateString()}
+                    </div>
+                  </td>
+
+                  {/* Source - Hidden on extra small screens */}
+                  <td className="hidden xl:table-cell px-3 sm:px-6 py-4">
+                    <span className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-gray-100 text-gray-800">
+                      {lead.source}
+                    </span>
+                  </td>                  {/* Actions */}
+                  <td className="px-3 sm:px-6 py-4">
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      <button
+                        onClick={() => handleView(lead)}
+                        className="p-1.5 sm:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        title="View lead details"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      
+                      <button
+                        onClick={() => handleEdit(lead)}
+                        className="p-1.5 sm:p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        title="Edit lead"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                      </button>
+                      
+                      <button
+                        onClick={() => handleDelete(lead)}
+                        className="p-1.5 sm:p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete lead"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+
+                      {/* More actions dropdown - hidden on small screens */}
+                      <button className="hidden sm:block p-1.5 sm:p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-lg transition-colors">
+                        <MoreHorizontal className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </td>
               </tr>
             ))}
           </tbody>
@@ -326,21 +348,21 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200">
-          <div className="text-sm text-gray-500">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 sm:px-6 py-4 border-t border-gray-200 bg-gray-50">
+          <div className="text-xs sm:text-sm text-gray-500 order-2 sm:order-1">
             Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, sortedLeads.length)} of {sortedLeads.length} results
           </div>
           
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 order-1 sm:order-2">
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-              className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-2 sm:px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
-              Previous
+              Prev
             </button>
             
-            <div className="flex items-center gap-1">
+            <div className="hidden sm:flex items-center gap-1">
               {Array.from({ length: totalPages }, (_, i) => i + 1)
                 .filter(page => {
                   return page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1;
@@ -364,17 +386,23 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
                 ))
               }
             </div>
+
+            {/* Mobile: Just show current page */}
+            <div className="sm:hidden px-3 py-2 text-sm bg-blue-600 text-white rounded-lg">
+              {currentPage} / {totalPages}
+            </div>
             
             <button
               onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-              className="px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="px-2 sm:px-3 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               Next
             </button>
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };
