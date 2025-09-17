@@ -9,11 +9,11 @@ import LeadTable from "./LeadTable.jsx";
 
 const MainLeadManagement = () => {
   
-    return (
-       <div className='text-6xl text-center font-bold'>
-      LEAD MANAGEMENT
-    </div>
-    );
+    // return (
+    //    <div className='text-6xl text-center font-bold'>
+    //   LEAD MANAGEMENT
+    // </div>
+    // );
     return (
         <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8">
             <div className="flex gap-4">
