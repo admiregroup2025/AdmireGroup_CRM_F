@@ -1,5 +1,5 @@
 import React from "react";
-import changePassword from "../../../public/changePassword.jpg"
+import changePassword from "../../assets/changePassword.jpg"
 
 const ChangePassword = () => {
     return (
