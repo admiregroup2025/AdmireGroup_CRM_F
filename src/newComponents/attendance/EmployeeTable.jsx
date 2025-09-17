@@ -134,6 +134,7 @@ const EmployeeTable = () => {
                 </td>
               </tr>
             ))}
+            
         </tbody>
       </table>
     </div>

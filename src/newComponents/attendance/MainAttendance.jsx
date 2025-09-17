@@ -31,13 +31,17 @@ const MainAttendance = () => {
                                 <div className="flex h-7 w-7 items-center justify-center rounded-md text-gray-500">{item.icon}</div>
                             </div>
                             <div>
-                                <div
-                                    className={`text-left font-semibold leading-tight ${
-                                        item.value === "5" || item.value === "12" ? "text-red-500" : "text-slate-700"
-                                    }`}
-                                >
-                                    {item.value}
-                                </div>
+                               <div
+  className={`text-left font-semibold leading-tight ${
+    item.value === "5" || item.value === "12"
+      ? "text-red-500"
+      : item.value === "84"
+      ? "text-green-500"
+      : "text-slate-700"
+  }`}
+>
+  {item.value}
+</div>
                                 <div className="mt-1 text-left text-sm font-medium text-gray-500">{item.subtitle}</div>
                             </div>
                         </div>
