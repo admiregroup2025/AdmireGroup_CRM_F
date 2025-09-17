@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { cardData } from "./data.js";
-import MyCard from "../UserManagement/MyCards.jsx";
+import MyCards from "../userManagement/MyCards.jsx";
 import SearchLead from "./SearchLead.jsx";
 import SearchStatus from "./SearchStatus.jsx";
 import AddLead from "./AddLead.jsx";
@@ -38,7 +38,7 @@ const MainLeadManagement = () => {
         {/* Stats Cards */}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3 xl:gap-4 mb-4 xl:mb-6">
           {cardData.map((card, index) => (
-            <MyCard
+            <MyCards
               key={`lead-card-${index}-${card.title}`}
               title={card.title}
               value={card.value}
