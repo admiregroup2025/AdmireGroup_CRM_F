@@ -1,7 +1,7 @@
 import React from "react";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
-import MainComponent from "./MainComponent";
+import Header from "./Header.jsx";
+import Sidebar from "./Sidebar.jsx";
+import MainComponent from "./MainComponent.jsx";
 import { Outlet } from "react-router-dom";
 
 const ScreenLayout = () => {

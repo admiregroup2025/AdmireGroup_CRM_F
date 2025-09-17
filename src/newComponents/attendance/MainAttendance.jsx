@@ -1,10 +1,10 @@
 import React from "react";
 import { ChartNoAxesCombined, Clock4, UserCheck, Users, LogIn, LogOut, Download ,Calendar} from "lucide-react";
 
-import Attendance from "../attendance/Attendence";
-import EmployeeTable from "./EmployeeTable";
-import SearchEmployes from "./SearchEmployes";
-import AllStatus from "./AllStatus";
+import Attendance from "../attendance/Attendence.jsx";
+import EmployeeTable from "./EmployeeTable.jsx";
+import SearchEmployes from "./SearchEmployes.jsx";
+import AllStatus from "./AllStatus.jsx";
 
 const MainAttendance = () => {
      const stats = [

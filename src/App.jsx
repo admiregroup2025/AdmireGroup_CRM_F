@@ -1,6 +1,6 @@
-import ForgotPassword from './newComponents/loginSection/ForgotPassword'
-import ResetLink from './newComponents/loginSection/ResetLink'
-import SignIn from './newComponents/loginSection/SignIn'
+import ForgotPassword from './newComponents/loginSection/ForgotPassword.jsx'
+import ResetLink from './newComponents/loginSection/ResetLink.jsx'
+import SignIn from './newComponents/loginSection/SignIn.jsx'
 
 const App = () => {
   return (

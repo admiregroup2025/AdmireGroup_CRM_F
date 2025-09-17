@@ -1,5 +1,5 @@
 import { CalendarIcon,LogIn, LogOut } from "lucide-react";
-import StatusBadge from "./StatusBadge"
+import StatusBadge from "./StatusBadge.jsx"
 
 import {  Employeeattendance } from "./employee.js";
 

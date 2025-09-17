@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { Eye, Edit2, Trash2, Phone, Mail, ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { leadData } from "./leads";
+import { leadData } from "./leads.js";
 
 const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrigger }) => {
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
