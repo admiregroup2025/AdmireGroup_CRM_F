@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from "react";
-import Modal from "./Modal";
+import Modal from "./Modal.jsx";
 
 const ROLES = ["Admin", "Manager", "User", "Sales Rep"];
 const DEPARTMENTS = ["IT", "Sales", "Marketing", "Engineering", "HR", "Finance"];
