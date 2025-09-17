@@ -1,158 +1,413 @@
-import { useState } from "react";
+import React, { useState, useCallback } from "react";
+import { Plus, X, AlertCircle, Check } from "lucide-react";
 import Modal from "../UserManagement/Modal";
+import { leadSources, leadStatuses, validationRules } from "./data";
 
-const status = ["Select Status", "Hot", "Warm", "Cold"];
+const AddLead = ({ onLeadAdded }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  
+  // Form state
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    leadStatus: "Hot",
+    value: "",
+    source: "",
+    notes: ""
+  });
 
-const AddLead = () => {
-  const [open, setOpen] = useState(false);
-  const [status, setStatus] = useState("Select Status");
-  const [statusOpen, setStatusOpen] = useState(false);
+  // Validation errors state
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
 
-  const handleStatusSelect = (selectedStatus) => {
-    setStatus(selectedStatus);
-    setStatusOpen(false);
-  };
+  // Validate individual field
+  const validateField = useCallback((name, value) => {
+    const rules = validationRules[name];
+    if (!rules) return "";
 
-  return (
-    <div>
-      {/* Button to open modal */}
-      <button
-        onClick={() => setOpen(true)}
-        className="bg-black w-fit px-3 py-2 flex gap-2 rounded-md"
-      >
-        <div className="text-gray-500">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="lucide lucide-plus"
-          >
-            <path d="M5 12h14" />
-            <path d="M12 5v14" />
-          </svg>
+    if (rules.required && !value.trim()) {
+      return `${name.charAt(0).toUpperCase() + name.slice(1)} is required`;
+    }
+
+    if (rules.minLength && value.length < rules.minLength) {
+      return `${name.charAt(0).toUpperCase() + name.slice(1)} must be at least ${rules.minLength} characters`;
+    }
+
+    if (rules.maxLength && value.length > rules.maxLength) {
+      return `${name.charAt(0).toUpperCase() + name.slice(1)} must be less than ${rules.maxLength} characters`;
+    }
+
+    if (rules.pattern && !rules.pattern.test(value)) {
+      switch (name) {
+        case 'email':
+          return 'Please enter a valid email address';
+        case 'phone':
+          return 'Please enter a valid phone number';
+        case 'value':
+          return 'Please enter a valid monetary value (e.g., $10,000)';
+        default:
+          return `Invalid ${name} format`;
+      }
+    }
+
+    return "";
+  }, []);  // Handle input changes
+  const handleInputChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Validate field if it has been touched
+    if (touched[name]) {
+      const error = validateField(name, value);
+      setErrors(prev => ({
+        ...prev,
+        [name]: error
+      }));
+    }
+  }, [touched, validateField]);
+
+  // Handle field blur
+  const handleBlur = useCallback((e) => {
+    const { name, value } = e.target;
+    setTouched(prev => ({
+      ...prev,
+      [name]: true
+    }));
+
+    const error = validateField(name, value);
+    setErrors(prev => ({
+      ...prev,
+      [name]: error
+    }));
+  }, [validateField]);
+
+  // Validate entire form
+  const validateForm = useCallback(() => {
+    const newErrors = {};
+    let isValid = true;
+
+    Object.keys(formData).forEach(field => {
+      if (validationRules[field]) {
+        const error = validateField(field, formData[field]);
+        if (error) {
+          newErrors[field] = error;
+          isValid = false;
+        }
+      }
+    });
+
+    // Check if source is selected
+    if (!formData.source) {
+      newErrors.source = "Please select a lead source";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  }, [formData, validateField]);  // Reset form
+  const resetForm = useCallback(() => {
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      company: "",
+      leadStatus: "Hot",
+      value: "",
+      source: "",
+      notes: ""
+    });
+    setErrors({});
+    setTouched({});
+    setSubmitSuccess(false);
+  }, []);
+
+  // Handle modal open/close
+  const handleOpen = useCallback(() => {
+    setIsOpen(true);
+    resetForm();
+  }, [resetForm]);
+
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+    setTimeout(resetForm, 300); // Reset after modal animation
+  }, [resetForm]);
+
+  // Handle form submission
+  const handleSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      // Mark all fields as touched to show validation errors
+      const allTouched = {};
+      Object.keys(formData).forEach(key => {
+        allTouched[key] = true;
+      });
+      setTouched(allTouched);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Success feedback
+      setSubmitSuccess(true);
+      onLeadAdded?.();
+      
+      setTimeout(() => {
+        handleClose();
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Error adding lead:', error);
+      // Handle error (could set error state here)
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [formData, validateForm, onLeadAdded, handleClose]);  // Input field component
+  const InputField = ({ name, type = "text", placeholder, required = false }) => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700" htmlFor={name}>
+        {name.charAt(0).toUpperCase() + name.slice(1)} {required && <span className="text-red-500">*</span>}
+      </label>
+      <input
+        id={name}
+        name={name}
+        type={type}
+        value={formData[name]}
+        onChange={handleInputChange}
+        onBlur={handleBlur}
+        placeholder={placeholder}
+        className={`
+          w-full px-4 py-3 border rounded-lg transition-colors duration-200
+          focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none
+          ${errors[name] 
+            ? 'border-red-300 bg-red-50' 
+            : 'border-gray-300 hover:border-gray-400'
+          }
+        `}
+        aria-invalid={errors[name] ? 'true' : 'false'}
+        aria-describedby={errors[name] ? `${name}-error` : undefined}
+        disabled={isSubmitting}
+      />
+      {errors[name] && (
+        <div id={`${name}-error`} className="flex items-center gap-2 text-sm text-red-600">
+          <AlertCircle className="w-4 h-4" />
+          <span>{errors[name]}</span>
         </div>
-        <p className="text-white">Add Lead</p>
+      )}
+    </div>
+  );
+
+  // Select field component
+  const SelectField = ({ name, options, placeholder, required = false }) => (
+    <div className="space-y-2">
+      <label className="block text-sm font-medium text-gray-700" htmlFor={name}>
+        {name === 'leadStatus' ? 'Status' : name.charAt(0).toUpperCase() + name.slice(1)} 
+        {required && <span className="text-red-500">*</span>}
+      </label>
+      <select
+        id={name}
+        name={name}
+        value={formData[name]}
+        onChange={handleInputChange}
+        onBlur={handleBlur}
+        className={`
+          w-full px-4 py-3 border rounded-lg transition-colors duration-200
+          focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none
+          ${errors[name] 
+            ? 'border-red-300 bg-red-50' 
+            : 'border-gray-300 hover:border-gray-400'
+          }
+        `}
+        aria-invalid={errors[name] ? 'true' : 'false'}
+        disabled={isSubmitting}
+      >
+        {placeholder && <option value="">{placeholder}</option>}
+        {options.map((option) => (
+          <option key={option.value || option} value={option.value || option}>
+            {option.label || option}
+          </option>
+        ))}
+      </select>
+      {errors[name] && (
+        <div className="flex items-center gap-2 text-sm text-red-600">
+          <AlertCircle className="w-4 h-4" />
+          <span>{errors[name]}</span>
+        </div>
+      )}
+    </div>
+  );  return (
+    <>
+      {/* Add Lead Button */}
+      <button
+        onClick={handleOpen}
+        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200 shadow-sm hover:shadow-md focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        aria-label="Add new lead"
+      >
+        <Plus className="w-5 h-5" />
+        <span>Add Lead</span>
       </button>
 
       {/* Modal */}
-      <Modal isOpen={open} onClose={() => setOpen(false)}>
-        <h2 className="text-xl font-semibold mb-6">Add New Lead</h2>
+      <Modal isOpen={isOpen} onClose={handleClose} size="large">
+        <div className="p-6">
+          {/* Modal Header */}
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">Add New Lead</h2>
+              <p className="text-sm text-gray-600 mt-1">Enter lead information to get started</p>
+            </div>
+            <button
+              onClick={handleClose}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              disabled={isSubmitting}
+            >
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
 
-        <form className="grid grid-cols-2 gap-4">
-          {/* Full Name */}
-          <div>
-            <label className="block text-sm mb-1">Full Name</label>
-            <input
-              type="text"
-              placeholder="John Doe"
-              className="w-full rounded-md px-3 py-2 bg-[#f3f3f5] focus:border-gray-600 focus:outline-gray-300 focus:ring-0"
+          {/* Success Message */}
+          {submitSuccess && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center gap-3">
+                <Check className="w-5 h-5 text-green-600" />
+                <div>
+                  <h3 className="font-medium text-green-800">Lead Added Successfully!</h3>
+                  <p className="text-sm text-green-600">The new lead has been added to your pipeline.</p>
+                </div>
+              </div>
+            </div>
+          )}          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Name Field */}
+              <InputField
+                name="name"
+                placeholder="Enter full name"
+                required
+              />
+
+              {/* Email Field */}
+              <InputField
+                name="email"
+                type="email"
+                placeholder="john@company.com"
+                required
+              />
+
+              {/* Phone Field */}
+              <InputField
+                name="phone"
+                type="tel"
+                placeholder="+1 (555) 123-4567"
+                required
+              />
+
+              {/* Company Field */}
+              <InputField
+                name="company"
+                placeholder="Company Name"
+                required
+              />
+
+              {/* Status Field */}
+              <SelectField
+                name="leadStatus"
+                options={leadStatuses}
+                required
+              />
+
+              {/* Value Field */}
+              <InputField
+                name="value"
+                placeholder="$10,000"
+                required
+              />
+            </div>
+
+            {/* Source Field - Full Width */}
+            <SelectField
+              name="source"
+              options={leadSources}
+              placeholder="Select lead source"
+              required
             />
-          </div>
 
-          {/* Email */}
-          <div>
-            <label className="block text-sm mb-1">Email</label>
-            <input
-              type="email"
-              placeholder="john@company.com"
-              className="w-full rounded-md px-3 py-2 bg-[#f3f3f5] focus:border-gray-600 focus:outline-gray-300 focus:ring-0"
-            />
-          </div>
-
-          {/* Phone */}
-          <div>
-            <label className="block text-sm mb-1">Phone</label>
-            <input
-              type="text"
-              placeholder="+1 (555) 123-4567"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#f3f3f5] focus:border-gray-600 focus:outline-gray-300 focus:ring-0"
-            />
-          </div>
-
-          {/* Company */}
-          <div>
-            <label className="block text-sm mb-1">Company</label>
-            <input
-              type="text"
-              placeholder="Company Name"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#f3f3f5] focus:border-gray-600 focus:outline-gray-300 focus:ring-0"
-            />
-          </div>
-
-          {/* Status */}
-          <div>
-            <label className="block text-sm mb-1">Status</label>
-            <select className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
-              <option>Hot</option>
-              <option>Warm</option>
-              <option>Cold</option>
-            </select>
-          </div>
-
-
-          {/* Expected value */}
-          <div>
-            <label className="block text-sm mb-1">Expected value</label>
-            <input
-              type="text"
-              placeholder="$10,000"
-              className="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#f3f3f5] focus:border-gray-600 focus:outline-gray-300 focus:ring-0"
-            />
-          </div>
-
-          
-{/* Lead Source */}
-<div className="col-span-2">
-  <label className="block text-sm mb-1">Lead Source</label>
-  <select className="w-full border border-gray-300 rounded-md px-3 py-2 bg-gray-100">
-    <option>Select source</option>
-    <option>Website</option>
-    <option>Referral</option>
-    <option>Cold Call</option>
-    <option>LinkedIn</option>
-    <option>Trade Show</option>
-  </select>
-</div>
-
-{/* Notes */}
-<div className="col-span-2">
-  <label className="block text-sm mb-1">Notes</label>
-  <input
-    type="text"
-    placeholder="Additional notes about the lead..."
-    className="w-full border border-gray-300 rounded-md px-3 py-2 bg-[#f3f3f5] focus:border-gray-600 focus:outline-gray-300 focus:ring-0"
-  />
-</div>
-
-
-        </form>
-
-        {/* Footer buttons */}
-        <div className="flex justify-end gap-2 mt-6">
-          <button
-            type="button"
-            className="px-4 py-2 border rounded-md"
-            onClick={() => setOpen(false)}
-          >
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            onClick={() => setOpen(false)}
-            className="bg-black w-fit px-3 py-2 flex gap-2 rounded-md text-white"
-          >
-            Add Lead
-          </button>
+            {/* Notes Field - Full Width */}
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-gray-700" htmlFor="notes">
+                Notes
+              </label>
+              <textarea
+                id="notes"
+                name="notes"
+                value={formData.notes}
+                onChange={handleInputChange}
+                onBlur={handleBlur}
+                rows={3}
+                placeholder="Additional notes about the lead..."
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none hover:border-gray-400 transition-colors duration-200 resize-none"
+                disabled={isSubmitting}
+              />
+            </div>            {/* Form Actions */}
+            <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-200">
+              <button
+                type="button"
+                onClick={handleClose}
+                disabled={isSubmitting}
+                className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Cancel
+              </button>
+              
+              <button
+                type="submit"
+                disabled={isSubmitting || submitSuccess}
+                className={`
+                  flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-200
+                  focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+                  ${isSubmitting || submitSuccess
+                    ? 'bg-blue-400 cursor-not-allowed' 
+                    : 'bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow-md'
+                  }
+                  text-white
+                `}
+              >
+                {isSubmitting ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                    </svg>
+                    Adding Lead...
+                  </span>
+                ) : submitSuccess ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <Check className="w-4 h-4" />
+                    Lead Added!
+                  </span>
+                ) : (
+                  <span className="flex items-center justify-center gap-2">
+                    <Plus className="w-4 h-4" />
+                    Add Lead
+                  </span>
+                )}
+              </button>
+            </div>
+          </form>
         </div>
       </Modal>
-    </div>
+    </>
   );
 };
 

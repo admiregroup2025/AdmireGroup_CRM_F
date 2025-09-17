@@ -1,89 +1,78 @@
+// Lead Management Data
 export const cardData = [
   {
     title: "Total Leads",
-    icon: "image",
+    icon: "users", // Changed to meaningful icon name
     value: "1,234",
-    description: "+12% from last month"
+    description: "+12% from last month",
+    color: "blue"
   },
   {
     title: "Hot Leads",
-    icon:"image",
-    value: 89,
-    description: "+5% from last week"
+    icon: "trending-up",
+    value: "89",
+    description: "+5% from last week",
+    color: "red"
   },
   {
     title: "Conversion Rate",
-    icon: "image",
-    value: '23.5%',
-    description: "+2.1% from last month"
+    icon: "target",
+    value: "23.5%",
+    description: "+2.1% from last month",
+    color: "green"
   },
   {
     title: "Total Value",
-    icon: "image",
-    value: '$2.4M',
-    description: "+18% from last month"
+    icon: "dollar-sign",
+    value: "$2.4M",
+    description: "+18% from last month",
+    color: "purple"
   }
 ];
 
-export const leadData = [
-  {
-    "lead": "Sarah Johnson",
-    "contact": {
-      "email": "sarah@techcorp.com",
-      "phone": "+1 (555) 123-4567"
-    },
-    "company": "Tech Corp",
-    "status": "Hot",
-    "value": "$15,000",
-    "last_contact": "2024-01-15",
-    "source": "Website"
+// Lead sources for dropdown
+export const leadSources = [
+  "Website",
+  "Referral", 
+  "Cold Call",
+  "LinkedIn",
+  "Trade Show",
+  "Email Campaign",
+  "Social Media",
+  "Event",
+  "Organic Search",
+  "Paid Ads"
+];
+
+// Lead statuses
+export const leadStatuses = [
+  { value: "Hot", label: "Hot", color: "red" },
+  { value: "Warm", label: "Warm", color: "orange" },
+  { value: "Cold", label: "Cold", color: "blue" }
+];
+
+// Form validation rules
+export const validationRules = {
+  name: {
+    required: true,
+    minLength: 2,
+    maxLength: 50
   },
-  {
-    "lead": "Mike Chen",
-    "contact": {
-      "email": "mike@globalinc.com",
-      "phone": "+1 (555) 234-5678"
-    },
-    "company": "Global Inc",
-    "status": "Warm",
-    "value": "$8,500",
-    "last_contact": "2024-01-12",
-    "source": "Referral"
+  email: {
+    required: true,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   },
-  {
-    "lead": "Emily Davis",
-    "contact": {
-      "email": "emily@startup.co",
-      "phone": "+1 (555) 345-6789"
-    },
-    "company": "StartUp Co",
-    "status": "Cold",
-    "value": "$22,000",
-    "last_contact": "2024-01-10",
-    "source": "Cold Call"
+  phone: {
+    required: true,
+    pattern: /^[\+]?[\d\s\-\(\)]{10,}$/
   },
-  {
-    "lead": "Alex Rodriguez",
-    "contact": {
-      "email": "alex@enterprise.com",
-      "phone": "+1 (555) 456-7890"
-    },
-    "company": "Enterprise Ltd",
-    "status": "Hot",
-    "value": "$35,000",
-    "last_contact": "2024-01-14",
-    "source": "LinkedIn"
+  company: {
+    required: true,
+    minLength: 2,
+    maxLength: 100
   },
-  {
-    "lead": "Jennifer Wilson",
-    "contact": {
-      "email": "jen@innovate.com",
-      "phone": "+1 (555) 567-8901"
-    },
-    "company": "Innovate Inc",
-    "status": "Warm",
-    "value": "$12,000",
-    "last_contact": "2024-01-11",
-    "source": "Trade Show"
+  value: {
+    required: true,
+    pattern: /^\$?[\d,]+(\.\d{2})?$/
   }
-]
+};
