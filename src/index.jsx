@@ -10,7 +10,7 @@ import ScreenLayout from "./newComponents/ScreenLayout.jsx";
 import ChangePassword from "./newComponents/loginSection/ChangePassword.jsx";
 import ResetLink from "./newComponents/loginSection/ResetLink.jsx";
 import MainLeadManagement from "./newComponents/leadManagement/MainLeadManagement.jsx";
-import MainUserManagement from "./newComponents/userManagement/MainUserManagement.jsx";
+import MainUserManagement from "../src/newComponents/userManagement/MainUserManagement.jsx";
 import MainAttendance from "./newComponents/attendance/MainAttendance.jsx";
 import MainAllCompanies from "./newComponents/allCompanies/MainAllCompanies.jsx";
 import MainSettings from "./newComponents/Settings/MainSettings.jsx";
