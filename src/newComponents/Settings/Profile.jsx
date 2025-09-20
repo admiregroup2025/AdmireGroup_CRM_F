@@ -536,8 +536,8 @@ export default function SecuritySettings() {
           </div>
           <input
             type="checkbox"
-            checked={smsAuth}
-            onChange={() => setSmsAuth(!smsAuth)}
+            // checked={smsAuth}
+            // onChange={() => setSmsAuth(!smsAuth)}
             className="toggle-checkbox"
             aria-label="Enable or disable SMS Authentication"
           />
@@ -551,8 +551,8 @@ export default function SecuritySettings() {
           </div>
           <input
             type="checkbox"
-            checked={emailAuth}
-            onChange={() => setEmailAuth(!emailAuth)}
+            // checked={emailAuth}
+            // onChange={() => setEmailAuth(!emailAuth)}
             className="toggle-checkbox"
             aria-label="Enable or disable Email Authentication"
           />

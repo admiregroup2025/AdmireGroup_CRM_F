@@ -157,4 +157,4 @@ const SearchCompanyByStatus = ({ onStatusChange, defaultStatus = "All Status" })
   );
 };
 
-export { SearchCompanyByStatus };
+export default SearchCompanyByStatus ;
