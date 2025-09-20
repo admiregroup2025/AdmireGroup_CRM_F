@@ -1,5 +1,5 @@
 import React from "react";
-import MyCard from "./MyCards.jsx";
+import MyCards from "./MyCards.jsx";
 import { SearchUser } from "./SearchUser.jsx";
 import { SearchRole } from "./SearchRoles.jsx";
 import AddUser from "./AddUser.jsx";
@@ -43,7 +43,7 @@ const MainUserManagement = () => {
             {/* Stats Cards */}
             <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {cardData.map((card, index) => (
-                    <MyCard
+                    <MyCards
                         key={`card-${index}`}
                         title={card.title}
                         value={card.value}

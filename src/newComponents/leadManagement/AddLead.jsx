@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Plus, X, AlertCircle, Check } from "lucide-react";
-import Modal from "../UserManagement/Modal";
-import { leadSources, leadStatuses, validationRules } from "./data";
+import Modal from "../userManagement/Modal.jsx";
+import { leadSources, leadStatuses, validationRules } from "./data.js";
 
 
 const AddLead = ({ onLeadAdded }) => {
