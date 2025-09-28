@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { cardData } from "./data.js";
-import MyCards from "../userManagement/MyCards.jsx";
+import MyCards from "../UserManagement/MyCards.jsx";
 import SearchLead from "./SearchLead.jsx";
 import SearchStatus from "./SearchStatus.jsx";
 import AddLead from "./AddLead.jsx";
