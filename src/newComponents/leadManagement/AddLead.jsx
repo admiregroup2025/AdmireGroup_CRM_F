@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Plus, X, AlertCircle, Check } from "lucide-react";
-import Modal from "../userManagement/Modal.jsx";
+import Modal from "../UserManagement/Modal.jsx";
 import { leadSources, leadStatuses, validationRules } from "./data.js";
 
 
