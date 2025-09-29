@@ -1,9 +1,9 @@
 import React from "react";
-import MyCards from "./MyCards.jsx";
-import { SearchUser } from "./SearchUser.jsx";
-import { SearchRole } from "./SearchRoles.jsx";
-import AddUser from "./AddUser.jsx";
-import UserTable from "./UserTable.jsx";
+import MyCards from "../UserManagement/MyCards.jsx";
+import { SearchUser } from "../UserManagement/SearchUser.jsx";
+import { SearchRole } from "../UserManagement/SearchRoles.jsx";
+import AddUser from "../UserManagement/AddUser.jsx";
+import UserTable from "../UserManagement/UserTable.jsx";
 
 const MainUserManagement = () => {
     const cardData = [
