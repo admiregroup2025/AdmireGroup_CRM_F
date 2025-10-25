@@ -1,14 +1,55 @@
-import { cardData, companiesData } from "./data.js";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import MyCard from "../UserManagement/MyCards.jsx";
 import SearchCompanies from "./SearchCompanies.jsx";
 import SearchCompanyByStatus from "./SearchCompanyByStatus.jsx";
 import AddCompany from "./AddCompany.jsx";
 import CompanyCard from "./CompanyCard.jsx";
-import { useState } from "react";
 import BusinessProfileCard from "./BusinessProfileCard.jsx";
+import { cardData } from "./data.js"; // Keep static for dashboard cards
 
 const MainAllCompanies = () => {
   const [view, setView] = useState("Grid");
+  const [companies, setCompanies] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Fetch companies from API
+  useEffect(() => {
+    const fetchCompanies = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await axios.get("http://localhost:4000/company/all");
+
+        // Safely extract array
+        const data = res?.data?.companies;
+        setCompanies(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error("Error fetching companies:", err);
+        setError("Failed to fetch companies. Please try again later.");
+        setCompanies([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompanies();
+  }, []);
+
+  // Helper to map API fields to component props
+  const mapCompanyProps = (company) => ({
+    companyName: company.companyName || "N/A",
+    industry: company.industry || "N/A",
+    status: company.status || "Pending",
+    email: company.email || "N/A",
+    phoneNumber: company.phoneNumber || "N/A",
+    website: company.website || "N/A",
+    numberOfEmployees: company.numberOfEmployees || 0,
+    deals: company.deals || 0,
+    value: company.value || "$0",
+  });
 
   return (
     <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8">
@@ -71,11 +112,19 @@ const MainAllCompanies = () => {
         role="region"
         aria-label="List of all companies"
       >
-        {companiesData.map((company, index) =>
-          view === "Grid" ? (
-            <CompanyCard key={index} {...company} />
-          ) : (
-            <BusinessProfileCard key={index} {...company} />
+        {loading ? (
+          <p className="text-center text-gray-500">Loading companies...</p>
+        ) : error ? (
+          <p className="text-center text-red-500">{error}</p>
+        ) : companies.length === 0 ? (
+          <p className="text-center text-gray-500">No companies found.</p>
+        ) : (
+          companies.map((company) =>
+            view === "Grid" ? (
+              <CompanyCard key={company._id} {...mapCompanyProps(company)} />
+            ) : (
+              <BusinessProfileCard key={company._id} {...mapCompanyProps(company)} />
+            )
           )
         )}
       </div>

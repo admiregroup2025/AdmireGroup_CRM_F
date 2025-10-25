@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Missing import
 
 const leads = [
   { id: 1, Profile: "JD", name: "John Doe", email: "john@example.com", status: "Hot", amount: "$12,000" },
@@ -17,48 +18,54 @@ const leads = [
   { id: 5, Profile: "RW", name: "Robert Wilson", email: "robert@example.com", status: "Warm", amount: "$9,800" },
 ];
 
-const companies = [
-  { id: 1, name: "TechCorp Solutions", deals: 12, revenue: "$45,000", status: "Active" },
-  { id: 2, name: "Digital Dynamics", deals: 8, revenue: "$32,000", status: "Active" },
-  { id: 3, name: "Innovation Labs", deals: 15, revenue: "$67,000", status: "Active" },
-  { id: 4, name: "Future Systems", deals: 6, revenue: "$28,000", status: "Inactive" },
-];
-
 const MainDashboard = () => {
   const navigate = useNavigate();
 
   const [attendanceData, setAttendanceData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]); // today's date (yyyy-mm-dd)
+  const [loadingAttendance, setLoadingAttendance] = useState(true);
+  const [companies, setCompanies] = useState([]);
+  const [loadingCompanies, setLoadingCompanies] = useState(true);
+  const [errorCompanies, setErrorCompanies] = useState("");
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split("T")[0]);
 
+  // Fetch Attendance
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
         const res = await fetch("http://localhost:4000/attendance/getAllAttendance");
         const data = await res.json();
         const attendance = Array.isArray(data) ? data : data.data || [];
-
         setAttendanceData(attendance);
-        filterByDate(attendance, selectedDate);
-      } catch (error) {
-        console.error("Error fetching attendance:", error);
+      } catch (err) {
+        console.error("Error fetching attendance:", err);
       } finally {
-        setLoading(false);
+        setLoadingAttendance(false);
       }
     };
-
     fetchAttendance();
   }, []);
 
-  // ✅ Refilter whenever date changes
+  // Fetch Companies
   useEffect(() => {
-    filterByDate(attendanceData, selectedDate);
-  }, [selectedDate, attendanceData]);
+    const fetchCompanies = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/company/all");
+        setCompanies(response.data?.companies || []);
+      } catch (err) {
+        console.error("Error fetching companies:", err);
+        setErrorCompanies("Failed to load companies");
+      } finally {
+        setLoadingCompanies(false);
+      }
+    };
+    fetchCompanies();
+  }, []);
 
-  const filterByDate = (data, dateString) => {
-    const target = new Date(dateString);
-    const filtered = data.filter((item) => {
+  // Filter attendance by date
+  useEffect(() => {
+    const target = new Date(selectedDate);
+    const filtered = attendanceData.filter((item) => {
       if (!item.date) return false;
       const itemDate = new Date(item.date);
       return (
@@ -68,19 +75,20 @@ const MainDashboard = () => {
       );
     });
     setFilteredData(filtered);
-  };
+  }, [selectedDate, attendanceData]);
 
   const getStatusColor = (status) => {
     if (!status) return "bg-gray-400";
     switch (status.toLowerCase()) {
-      case "present":
-        return "bg-green-500 hover:bg-green-600";
-      case "absent":
-        return "bg-red-500 hover:bg-red-600";
-      case "late":
-        return "bg-yellow-500 hover:bg-yellow-600";
-      default:
-        return "bg-gray-500 hover:bg-gray-600";
+      case "present": return "bg-green-500 hover:bg-green-600";
+      case "absent": return "bg-red-500 hover:bg-red-600";
+      case "late": return "bg-yellow-500 hover:bg-yellow-600";
+      case "hot": return "bg-red-500 hover:bg-red-600";
+      case "warm": return "bg-yellow-500 hover:bg-yellow-600";
+      case "cold": return "bg-gray-500 hover:bg-gray-600";
+      case "active": return "bg-green-500 hover:bg-green-600";
+      case "inactive": return "bg-gray-500 hover:bg-gray-600";
+      default: return "bg-gray-500 hover:bg-gray-600";
     }
   };
 
@@ -111,7 +119,7 @@ const MainDashboard = () => {
           <div key={index} className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-105">
             <div className="flex items-center justify-between mb-4">
               <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${item.color} bg-opacity-10`}>
-                <span className={item.color}>{item.icon}</span>
+                {item.icon}
               </div>
               {item.trend === "up" ? (
                 <TrendingUp className="w-4 h-4 text-green-500" />
@@ -121,13 +129,7 @@ const MainDashboard = () => {
             </div>
             <h3 className="text-sm font-medium text-gray-600 mb-1">{item.title}</h3>
             <div className="text-3xl font-bold text-gray-900 mb-2">{item.value}</div>
-            <div
-              className={`text-sm font-medium ${
-                item.trend === "up" ? "text-green-600" : "text-red-600"
-              }`}
-            >
-              {item.percentage}
-            </div>
+            <div className={`text-sm font-medium ${item.trend === "up" ? "text-green-600" : "text-red-600"}`}>{item.percentage}</div>
           </div>
         ))}
       </div>
@@ -163,14 +165,13 @@ const MainDashboard = () => {
           </div>
         </div>
 
-        {/* ✅ Filtered Attendance */}
+        {/* Attendance */}
         <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
             <div>
               <h4 className="text-lg font-semibold text-gray-900">Attendance</h4>
               <p className="text-sm text-gray-600 mt-1">Filtered by Date</p>
             </div>
-            {/* Date Picker */}
             <input
               type="date"
               value={selectedDate}
@@ -180,7 +181,7 @@ const MainDashboard = () => {
           </div>
 
           <div className="p-6">
-            {loading ? (
+            {loadingAttendance ? (
               <p className="text-gray-500 text-sm text-center">Loading attendance data...</p>
             ) : filteredData.length === 0 ? (
               <p className="text-gray-500 text-sm text-center">No attendance records found for this date.</p>
@@ -213,7 +214,84 @@ const MainDashboard = () => {
         </div>
       </div>
 
-      {/* Companies, Quick Actions (same as before) */}
+      {/* Companies */}
+      <div className="mb-8 rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="px-6 py-4 border-b border-gray-100">
+          <h4 className="text-lg font-semibold text-gray-900">Companies</h4>
+          <p className="text-sm text-gray-600 mt-1">Active business partnerships</p>
+        </div>
+        <div className="p-6">
+          {loadingCompanies ? (
+            <p className="text-gray-500 text-sm">Loading companies...</p>
+          ) : errorCompanies ? (
+            <p className="text-red-500 text-sm">{errorCompanies}</p>
+          ) : companies.length === 0 ? (
+            <p className="text-gray-500 text-sm">No companies found.</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {companies.map((company) => (
+                <div key={company._id} className="rounded-lg border border-gray-200 bg-gray-50 p-4 hover:shadow-md transition-shadow">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-2">{company.companyName}</h3>
+                    <span className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold text-white ${getStatusColor(company.status)}`}>
+                      {company.status}
+                    </span>
+                  </div>
+                  <div className="space-y-1">
+                    {company.industry && <div className="text-xs text-gray-600 capitalize">{company.industry} industry</div>}
+                    {company.email && <div className="text-xs text-gray-500">{company.email}</div>}
+                    {company.numberOfEmployees !== undefined && (
+                      <div className="text-sm font-semibold text-gray-800">Employees: {company.numberOfEmployees}</div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+      </div>
+      <div className="rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="px-6 py-4 border-b border-gray-100">
+          <h4 className="text-lg font-semibold text-gray-900">Quick Actions</h4>
+          <p className="text-sm text-gray-600 mt-1">Common tasks and shortcuts</p>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <button
+              onClick={() => navigate("/add-lead")}
+              className="flex flex-col items-center justify-center h-24 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-200 transform hover:scale-105 shadow-md"
+            >
+              <Users className="w-6 h-6 mb-2" />
+              <span className="font-semibold">Add Lead</span>
+            </button>
+
+            <button
+              onClick={() => navigate("/add-user")}
+              className="flex flex-col items-center justify-center h-24 rounded-lg border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all duration-200 transform hover:scale-105"
+            >
+              <UserCheck className="w-6 h-6 mb-2 text-gray-600" />
+              <span className="font-semibold text-gray-700">Add User</span>
+            </button>
+
+            <button
+              onClick={() => navigate("/clock-in-out")}
+              className="flex flex-col items-center justify-center h-24 rounded-lg border-2 border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all duration-200 transform hover:scale-105"
+            >
+              <Clock4 className="w-6 h-6 mb-2 text-gray-600" />
+              <span className="font-semibold text-gray-700">Clock In/Out</span>
+            </button>
+
+            <button
+              onClick={() => navigate("/view-reports")}
+              className="flex flex-col items-center justify-center h-24 rounded-lg border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50 transition-all duration-200 transform hover:scale-105"
+            >
+              <BarChart3 className="w-6 h-6 mb-2 text-gray-600" />
+              <span className="font-semibold text-gray-700">View Reports</span>
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
