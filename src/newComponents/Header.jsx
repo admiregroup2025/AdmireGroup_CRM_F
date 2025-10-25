@@ -27,7 +27,7 @@ const Header = () => {
                         JD
                     </div>
                     <div className="flex flex-col">
-                        <span className="text-[18px] font-medium text-gray-500">John Doe</span>
+                        <span className="text-[18px] font-medium text-gray-500">{localStorage.getItem("userId")}</span>
                     </div>
                 </div>
 

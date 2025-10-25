@@ -1,6 +1,8 @@
 import { Mail, Phone, Globe, Users, Eye, Edit, Trash2 } from "lucide-react";
+import axios from "axios";
 
 const CompanyCard = ({
+  _id,
   companyName,
   industry,
   status,
@@ -10,12 +12,29 @@ const CompanyCard = ({
   numberOfEmployees,
   deals = 0,
   value = "$0",
+  onDelete, // callback to remove from parent
 }) => {
   const displayName = companyName || "N/A";
   const displayStatus = status?.toLowerCase() === "active" ? "Active" : "Pending";
 
+  const handleDelete = async () => {
+    if (!_id) return;
+    if (!window.confirm(`Are you sure you want to delete ${displayName}?`)) return;
+
+    try {
+      const res = await axios.delete(`http://localhost:4000/company/delete/${_id}`);
+      if (res.status === 200) {
+        alert("Company deleted successfully ✅");
+        if (onDelete) onDelete(_id);
+      }
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      alert("Failed to delete company ❌");
+    }
+  };
+
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 w-80 hover:shadow-lg">
+    <div className="bg-white rounded-xl border border-gray-200 p-6 w-80 hover:shadow-lg transition-shadow duration-200">
       {/* Top Row */}
       <div className="flex justify-between items-center mb-2">
         <div className="flex items-center gap-3">
@@ -36,7 +55,6 @@ const CompanyCard = ({
               ? "bg-[#00c951] text-white"
               : "bg-[#f0b100] text-gray-900"
           }`}
-          aria-label={`Status: ${displayStatus}`}
         >
           {displayStatus}
         </span>
@@ -80,7 +98,10 @@ const CompanyCard = ({
         <button className="text-gray-500 hover:bg-gray-200 p-2 rounded-sm">
           <Edit size={15} />
         </button>
-        <button className="text-red-500 hover:bg-gray-200 p-2 rounded-sm">
+        <button
+          onClick={handleDelete}
+          className="text-red-500 hover:bg-gray-200 p-2 rounded-sm"
+        >
           <Trash2 size={15} />
         </button>
       </div>

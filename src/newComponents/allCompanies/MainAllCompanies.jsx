@@ -103,31 +103,47 @@ const MainAllCompanies = () => {
       </div>
 
       {/* Companies List */}
-      <div
-        className={`border border-gray-200 rounded-md bg-[#ffffff] p-4 ${
-          view === "Grid"
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-            : "flex flex-col gap-4"
-        }`}
-        role="region"
-        aria-label="List of all companies"
-      >
-        {loading ? (
-          <p className="text-center text-gray-500">Loading companies...</p>
-        ) : error ? (
-          <p className="text-center text-red-500">{error}</p>
-        ) : companies.length === 0 ? (
-          <p className="text-center text-gray-500">No companies found.</p>
-        ) : (
-          companies.map((company) =>
-            view === "Grid" ? (
-              <CompanyCard key={company._id} {...mapCompanyProps(company)} />
-            ) : (
-              <BusinessProfileCard key={company._id} {...mapCompanyProps(company)} />
-            )
-          )
-        )}
-      </div>
+      {/* Companies List */}
+<div
+  className={`border border-gray-200 rounded-md bg-[#ffffff] p-4 ${
+    view === "Grid"
+      ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+      : "flex flex-col gap-4"
+  }`}
+  role="region"
+  aria-label="List of all companies"
+>
+  {loading ? (
+    <p className="text-center text-gray-500">Loading companies...</p>
+  ) : error ? (
+    <p className="text-center text-red-500">{error}</p>
+  ) : companies.length === 0 ? (
+    <p className="text-center text-gray-500">No companies found.</p>
+  ) : (
+    companies.map((company) =>
+      view === "Grid" ? (
+        <CompanyCard
+          key={company._id}
+          _id={company._id}
+          {...mapCompanyProps(company)}
+          onDelete={(deletedId) =>
+            setCompanies((prev) => prev.filter((c) => c._id !== deletedId))
+          }
+        />
+      ) : (
+        <BusinessProfileCard
+          key={company._id}
+          _id={company._id}
+          {...mapCompanyProps(company)}
+          onDelete={(deletedId) =>
+            setCompanies((prev) => prev.filter((c) => c._id !== deletedId))
+          }
+        />
+      )
+    )
+  )}
+</div>
+
     </div>
   );
 };

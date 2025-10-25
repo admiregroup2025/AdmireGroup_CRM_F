@@ -2,13 +2,13 @@ export const cardData = [
   {
     title: "Total Companies",
     icon: "image",
-    value: "156",
+    value: "3",
     description: "+8 new this month"
   },
   {
     title: "Active Companies",
     icon: "image",
-    value: "143",
+    value: "3",
     description: "91.7% active rate"
   },
   {

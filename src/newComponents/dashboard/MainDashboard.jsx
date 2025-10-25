@@ -100,7 +100,7 @@ const MainDashboard = () => {
 
   const cards = [
     { title: "Total Leads", value: "1,234", percentage: "+12% from last month", icon: <Users className="w-5 h-5" />, trend: "up", color: "text-blue-600" },
-    { title: "Total Users", value: "987", percentage: "+8% from last month", icon: <UserCheck className="w-5 h-5" />, trend: "up", color: "text-green-600" },
+    { title: "Total Users", value: "4", percentage: "+8% from last month", icon: <UserCheck className="w-5 h-5" />, trend: "up", color: "text-green-600" },
     { title: "Avg Time", value: "00:45", percentage: "-2% from last month", icon: <Clock4 className="w-5 h-5" />, trend: "down", color: "text-orange-600" },
     { title: "Conversions", value: "76", percentage: "+5% from last month", icon: <BarChart3 className="w-5 h-5" />, trend: "up", color: "text-purple-600" },
   ];

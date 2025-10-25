@@ -1,6 +1,8 @@
 import { Eye, Edit, Trash2 } from "lucide-react";
+import axios from "axios";
 
 const BusinessProfileCard = ({
+  _id,
   companyName,
   industry,
   email,
@@ -8,9 +10,26 @@ const BusinessProfileCard = ({
   deals = 0,
   value = "$0",
   status,
+  onDelete, // ✅ callback from parent
 }) => {
   const displayName = companyName || "N/A";
   const displayStatus = status?.toLowerCase() === "active" ? "Active" : "Pending";
+
+  const handleDelete = async () => {
+    if (!_id) return;
+    if (!window.confirm(`Are you sure you want to delete ${displayName}?`)) return;
+
+    try {
+      const res = await axios.delete(`http://localhost:4000/company/delete/${_id}`);
+      if (res.status === 200) {
+        alert("Company deleted successfully ✅");
+        if (onDelete) onDelete(_id);
+      }
+    } catch (error) {
+      console.error("Error deleting company:", error);
+      alert("Failed to delete company ❌");
+    }
+  };
 
   return (
     <div className="flex items-center justify-between p-2 border rounded-lg shadow-sm hover:shadow-md transition bg-white">
@@ -53,7 +72,10 @@ const BusinessProfileCard = ({
         <button className="hover:bg-gray-200 p-2 rounded-sm">
           <Edit size={15} />
         </button>
-        <button className="text-red-500 hover:bg-gray-200 p-2 rounded-sm">
+        <button
+          onClick={handleDelete}
+          className="text-red-500 hover:bg-gray-200 p-2 rounded-sm"
+        >
           <Trash2 size={15} />
         </button>
       </div>

@@ -32,6 +32,16 @@ const MainUserManagement = () => {
             description: "+2 from last week",
         },
     ];
+    const response = async () => {
+        try {
+            const res = await fetch("http://localhost:4000/employee/allEmployee");
+            const data = await res.json();
+            console.log(data);
+        } catch (error) {
+            console.error("Error fetching user data:", error);
+        }
+    };
+    
     return (
         <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8">
             {/* Header Section */}
