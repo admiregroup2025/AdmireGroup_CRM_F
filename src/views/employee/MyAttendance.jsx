@@ -6,7 +6,7 @@ const MyAttendance = () => {
   // Sample data - replace with your actual data
   const attendanceData = [
     { id: 1, date: '2023-06-15', punchIn: '09:00 AM', punchOut: '06:00 PM', status: 'Present', totalHours: '9h 0m' },
-    { id: 2, date: '2023-06-14', punchIn: '09:15 AM', punchOut: '05:45 PM', status: 'Present', totalHours: '8h 30m' },
+    { id: 2, date: '2023-06-14', punchIn: '09:12 AM', punchOut: '05:45 PM', status: 'Present', totalHours: '8h 30m' },
     { id: 3, date: '2023-06-13', punchIn: '--', punchOut: '--', status: 'Absent', totalHours: '0h 0m' },
     { id: 4, date: '2023-06-12', punchIn: '09:05 AM', punchOut: '06:10 PM', status: 'Present', totalHours: '9h 5m' },
     { id: 5, date: '2023-06-11', punchIn: '10:30 AM', punchOut: '05:00 PM', status: 'Late', totalHours: '6h 30m' },

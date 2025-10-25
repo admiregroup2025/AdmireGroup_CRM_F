@@ -1,12 +1,16 @@
 // src/components/ProtectedRoute.jsx
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem("token"); // check token from localStorage
+  const token = localStorage.getItem("token"); // use the actual key you store
+  const location = useLocation();
+
+  // If not logged in, redirect to login (and prevent going "back")
   if (!token) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/" replace state={{ from: location }} />;
   }
+
   return children;
 };
 

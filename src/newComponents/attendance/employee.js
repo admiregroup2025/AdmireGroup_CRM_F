@@ -26,7 +26,7 @@ export const Employeeattendance = [
     name: "David Brown",
     department: "Sales",
     date: "2024-01-15",
-    checkIn: "09:30 AM",
+    checkIn: "09:31 AM",
     checkOut: "06:00 PM",
     status: "Late",
     workingHours: "7h 30m",
