@@ -5,6 +5,7 @@ import SearchLead from "./SearchLead.jsx";
 import SearchStatus from "./SearchStatus.jsx";
 import AddLead from "./AddLead.jsx";
 import LeadTable from "./LeadTable.jsx";
+import LeadCards from "./LeadCards.jsx";
 
 const MainLeadManagement = () => {
   const [searchText, setSearchText] = useState("");
@@ -36,7 +37,7 @@ const MainLeadManagement = () => {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3 xl:gap-4 mb-4 xl:mb-6">
+        {/* <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3 xl:gap-4 mb-4 xl:mb-6">
           {cardData.map((card, index) => (
             <MyCards
               key={`lead-card-${index}-${card.title}`}
@@ -46,8 +47,10 @@ const MainLeadManagement = () => {
               description={card.description}
             />
           ))}
+        </div> */}
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-2 sm:gap-3 xl:gap-4 mb-4 xl:mb-6">
+          <LeadCards/>
         </div>
-
         {/* Filters and Actions */}
         <div className="mb-4 xl:mb-6 flex flex-col gap-3 xl:flex-row xl:gap-4 xl:justify-between xl:items-center">
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full xl:w-auto min-w-0">

@@ -32,7 +32,7 @@ export const cardData = [
 
 // Lead sources for dropdown
 export const leadSources = [
-  "Website",
+  "website",
   "Referral", 
   "Cold Call",
   "LinkedIn",

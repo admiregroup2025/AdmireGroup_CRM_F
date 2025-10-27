@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import PropTypes from "prop-types";
 
-const ROLES = ["All Roles", "Admin", "Manager", "Sales Rep", "User"];
+const ROLES = ["All Roles", "Admin","employee"];
 
 const SearchRole = ({ onRoleChange, defaultRole }) => {
   const [role, setRole] = useState(defaultRole);

@@ -2,7 +2,7 @@ export const cardData = [
   {
     title: "Total Companies",
     icon: "image",
-    value: "3",
+    value: "5",
     description: "+8 new this month"
   },
   {
