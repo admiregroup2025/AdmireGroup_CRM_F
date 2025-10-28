@@ -251,13 +251,13 @@ const AddLead = ({ onLeadAdded }) => {
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Add New Lead</h2>
               <p className="text-xs text-gray-600 mt-0.5">Enter lead information</p>
             </div>
-            <button
+            {/* <button
               onClick={handleClose}
               className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
               disabled={isSubmitting}
             >
               <X className="w-4 h-4 text-gray-500" />
-            </button>
+            </button> */}
           </div>
 
           {/* Body */}

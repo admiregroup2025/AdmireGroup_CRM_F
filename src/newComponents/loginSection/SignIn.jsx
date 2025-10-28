@@ -91,7 +91,8 @@ const SignIn = () => {
       localStorage.setItem("role", user.role);
       localStorage.setItem("userId", user.id);
 
-      if (user.role === "employee" && user.companyId) {
+      // Store companyId for both admin and employee if available
+      if (user.companyId) {
         localStorage.setItem("companyId", user.companyId);
       } else {
         localStorage.removeItem("companyId");

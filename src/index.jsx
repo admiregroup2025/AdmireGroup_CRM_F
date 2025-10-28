@@ -393,6 +393,8 @@ import ChangePassword from "./newComponents/loginSection/ChangePassword.jsx";
 
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import EditUser from "./newComponents/UserManagement/EditUser.jsx";
+import { LeaveAdmin } from "./views/admin/leaveManagement/LeaveAdmin.jsx";
+import { LeavePage } from "./views/employee/LeaveSection/LeavePage.jsx";
 
 // ✅ ROUTER CONFIGURATION
 const router = createBrowserRouter([
@@ -517,6 +519,22 @@ const router = createBrowserRouter([
           </ProtectedRoute>
         ),
       },
+      {
+      path: "/leave-apply",
+      element: (
+        <ProtectedRoute allowedRoles={["employee"]}>
+          <LeavePage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/leaves",
+      element: (
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <LeaveAdmin />
+        </ProtectedRoute>
+      ),
+    },
     ],
   },
 ]);

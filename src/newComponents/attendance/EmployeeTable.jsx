@@ -6,22 +6,37 @@ const EmployeeTable = () => {
   const [employeeData, setEmployeeData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch attendance data from API
+  // Get logged-in user info
+  const userId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role"); // "Super admin" or "Employee"
+
+  // Fetch attendance data
   useEffect(() => {
     const fetchAttendance = async () => {
       try {
         const res = await fetch("http://localhost:4000/attendance/getAllAttendance");
         const data = await res.json();
-        setEmployeeData(data);
-      } catch (error) {
-        console.error("Failed to fetch attendance data:", error);
+        let allData = Array.isArray(data) ? data : data.data || [];
+
+        // Filter only for logged-in employee if role is Employee
+        if (role === "Employee") {
+          allData = allData.filter((item) => item.employee?._id === userId);
+        }
+
+        setEmployeeData(allData);
+      } catch (err) {
+        console.error("Error fetching attendance:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchAttendance();
-  }, []);
+  }, [userId, role]);
+
+  // Function to format time
+  const formatTime = (time) =>
+    time ? new Date(time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "-";
 
   return (
     <div className="border border-gray-200 rounded-md bg-[#ffffff] whitespace-nowrap">
@@ -53,15 +68,17 @@ const EmployeeTable = () => {
             </tr>
           ) : (
             employeeData.map((u) => {
-              const checkIn = u.clockIn ? new Date(u.clockIn).toLocaleTimeString() : "-";
-              const checkOut = u.clockOut ? new Date(u.clockOut).toLocaleTimeString() : "-";
-              const date = u.date ? new Date(u.date).toLocaleDateString() : "-";
-              const workingHours = u.clockIn && u.clockOut
-                ? Math.round((new Date(u.clockOut) - new Date(u.clockIn)) / 36e5 * 100) / 100
-                : "-";
-              const overtime = workingHours !== "-" && workingHours > 8
-                ? `${(workingHours - 8).toFixed(2)} hrs`
-                : "-";
+              const checkIn = u.clockIn ? formatTime(u.clockIn) : "-";
+              const checkOut = u.clockOut ? formatTime(u.clockOut) : "-";
+              const date = u.clockIn ? new Date(u.clockIn).toLocaleDateString() : "-";
+              const workingHours =
+                u.clockIn && u.clockOut
+                  ? Math.round((new Date(u.clockOut) - new Date(u.clockIn)) / 36e5 * 100) / 100
+                  : "-";
+              const overtime =
+                workingHours !== "-" && workingHours > 8
+                  ? `${(workingHours - 8).toFixed(2)} hrs`
+                  : "-";
 
               return (
                 <tr key={u._id} className="hover:bg-gray-50">
