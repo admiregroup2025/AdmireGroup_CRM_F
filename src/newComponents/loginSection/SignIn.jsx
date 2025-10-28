@@ -16,6 +16,16 @@ const SignIn = () => {
   const emailRef = useRef(null);
   const navigate = useNavigate();
 
+  // Check token expiry on component mount
+  useEffect(() => {
+    const tokenExpiry = localStorage.getItem("tokenExpiry");
+    if (tokenExpiry && new Date().getTime() > tokenExpiry) {
+      // Token expired
+      localStorage.clear();
+      navigate("/login");
+    }
+  }, [navigate]);
+
   // Validation function
   const validate = () => {
     const newErrors = {};
@@ -61,7 +71,7 @@ const SignIn = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:4000/login/login", // adjust if needed
+        "http://localhost:4000/login/login",
         { email, password, role },
         { withCredentials: true }
       );
@@ -69,13 +79,15 @@ const SignIn = () => {
       const { token, user } = response.data;
 
       if (!token || !user || !user.role) {
-        toast.error("Invalid server response. Missing user or token.");
         setLoading(false);
+        toast.error("Invalid server response. Missing user or token.");
         return;
       }
 
-      // Store token, role, user id, companyId
+      // Set token and expiry (12 hours)
+      const expiryTime = new Date().getTime() + 12 * 60 * 60 * 1000; // 12 hours
       localStorage.setItem("token", token);
+      localStorage.setItem("tokenExpiry", expiryTime);
       localStorage.setItem("role", user.role);
       localStorage.setItem("userId", user.id);
 
@@ -89,7 +101,6 @@ const SignIn = () => {
       if (user.name) {
         localStorage.setItem("userName", user.name);
       } else {
-        // Fetch name if not returned
         await fetchUserName(user.id, token);
       }
 
@@ -253,7 +264,7 @@ const SignIn = () => {
                 className={`w-full rounded-lg bg-black py-3 font-medium text-white transition duration-300 hover:scale-[102%] hover:bg-gray-800 focus:outline-none ${
                   loading ? "opacity-70 cursor-not-allowed" : ""
                 }`}
-                disabled={loading}
+                disabled={loading || role === "default"}
               >
                 {loading ? "Logging in..." : "Login"}
               </button>
