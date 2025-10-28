@@ -15,8 +15,9 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
   // Fetch leads from API
   const fetchLeadData = async () => {
     try {
-      const response = await fetch("http://localhost:4000/leads/");
+      const response = await fetch("http://localhost:4000/leads");
       const result = await response.json();
+      console.log("API Response:", result);
       if (result.success) {
         setLeads(result.data || result);
       } else {
@@ -30,7 +31,7 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
 
   useEffect(() => {
     fetchLeadData();
-  }, [refreshTrigger]);
+  }, []);
 
   // Status colors
   const getStatusColor = (status) => {
