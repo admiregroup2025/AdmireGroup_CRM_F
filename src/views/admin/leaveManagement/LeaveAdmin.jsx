@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Check, X } from "lucide-react";
+import { FaEye } from "react-icons/fa";
 
 export const LeaveAdmin = () => {
   const [leaves, setLeaves] = useState([]);
@@ -9,45 +11,36 @@ export const LeaveAdmin = () => {
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Filters
   const [selectedCompany, setSelectedCompany] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  const departments = [
-    "IT",
-    "Sales",
-    "Marketing",
-    "Engineering",
-    "HR",
-    "Finance",
-  ];
+  const [showModal, setShowModal] = useState(false);
+  const [selectedLeave, setSelectedLeave] = useState(null);
 
-  // ✅ Fetch all companies for dropdown
+  const departments = ["IT", "Sales", "Marketing", "Engineering", "HR", "Finance"];
+
+  // ✅ Fetch all companies
   const fetchCompanies = async () => {
     try {
       const res = await axios.get("http://localhost:4000/company/all");
       setCompanies(res.data?.companies || res.data);
     } catch (err) {
-      console.error(err);
       toast.error("Failed to fetch companies");
     }
   };
 
-  // ✅ Fetch all leave requests
+  // ✅ Fetch all leaves
   const fetchLeaves = async () => {
     try {
       const res = await axios.get("http://localhost:4000/admin/all-leaves");
       const leaveData = res.data?.leaves || res.data;
       setLeaves(leaveData);
 
-      // Fetch Employee and Company details
       const employeePromises = leaveData.map(async (leave) => {
         const empId = leave.employeeId?._id || leave.employeeId;
         if (!empId) return null;
-        const empRes = await axios.get(
-          `http://localhost:4000/employee/getEmployee/${empId}`
-        );
+        const empRes = await axios.get(`http://localhost:4000/employee/getEmployee/${empId}`);
         return { empId, data: empRes.data.employee };
       });
 
@@ -58,17 +51,12 @@ export const LeaveAdmin = () => {
       employeeResults.forEach((item) => {
         if (item) {
           empDataMap[item.empId] = item.data;
-          if (item.data?.company) {
-            companyIds.add(item.data.company);
-          }
+          if (item.data?.company) companyIds.add(item.data.company);
         }
       });
 
-      // Fetch unique company details
       const companyPromises = [...companyIds].map(async (companyId) => {
-        const compRes = await axios.get(
-          `http://localhost:4000/company/${companyId}`
-        );
+        const compRes = await axios.get(`http://localhost:4000/company/${companyId}`);
         return { companyId, data: compRes.data.company };
       });
 
@@ -81,7 +69,6 @@ export const LeaveAdmin = () => {
       setEmployeeDetails(empDataMap);
       setCompanyDetails(compDataMap);
     } catch (err) {
-      console.error(err);
       toast.error("Failed to fetch leave data");
     } finally {
       setLoading(false);
@@ -93,13 +80,10 @@ export const LeaveAdmin = () => {
     fetchLeaves();
   }, []);
 
-  // ✅ Handle Approve / Reject
   const handleAction = async (leaveId, status) => {
     try {
       const adminRemark =
-        status === "Approved"
-          ? "Leave approved by admin"
-          : "Leave rejected by admin";
+        status === "Approved" ? "Leave approved by admin" : "Leave rejected by admin";
 
       await axios.put(`http://localhost:4000/admin/update-leave/${leaveId}`, {
         status,
@@ -109,12 +93,15 @@ export const LeaveAdmin = () => {
       toast.success(`Leave ${status.toLowerCase()} successfully!`);
       fetchLeaves();
     } catch (err) {
-      console.error(err);
       toast.error("Failed to update leave status");
     }
   };
 
-  // ✅ Apply Filters
+  const handleView = (leave) => {
+    setSelectedLeave(leave);
+    setShowModal(true);
+  };
+
   const filteredLeaves = leaves.filter((leave) => {
     const empId = leave.employeeId?._id || leave.employeeId;
     const emp = employeeDetails[empId];
@@ -123,43 +110,32 @@ export const LeaveAdmin = () => {
         ? companyDetails[emp.company]
         : null;
 
-    const matchesCompany =
-      !selectedCompany || comp?._id === selectedCompany;
-    const matchesDept =
-      !selectedDepartment || emp?.department === selectedDepartment;
-    const matchesStatus =
-      !selectedStatus || leave.status === selectedStatus;
+    const matchesCompany = !selectedCompany || comp?._id === selectedCompany;
+    const matchesDept = !selectedDepartment || emp?.department === selectedDepartment;
+    const matchesStatus = !selectedStatus || leave.status === selectedStatus;
 
     return matchesCompany && matchesDept && matchesStatus;
   });
 
-  if (loading) {
-    return (
-      <div className="p-6 text-center text-gray-600">
-        Loading leave requests...
-      </div>
-    );
-  }
+  if (loading)
+    return <div className="p-6 text-center text-gray-600">Loading leave requests...</div>;
 
   return (
-    <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8">
+    <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8 relative">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">
-          Leave Management
-        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-2">Leave Management</h1>
         <p className="text-gray-600">
           Review, approve, or reject leave requests from employees
         </p>
       </div>
 
-      {/* 🔹 Filters Section */}
+      {/* Filters */}
       <div className="flex flex-wrap gap-4 mb-6">
-        {/* Company Filter */}
         <select
           value={selectedCompany}
           onChange={(e) => setSelectedCompany(e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm bg-white shadow-sm focus:outline-none"
+          className="border rounded-md px-3 py-2 text-sm bg-white shadow-sm"
         >
           <option value="">All Companies</option>
           {companies.map((company) => (
@@ -169,11 +145,10 @@ export const LeaveAdmin = () => {
           ))}
         </select>
 
-        {/* Department Filter */}
         <select
           value={selectedDepartment}
           onChange={(e) => setSelectedDepartment(e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm bg-white shadow-sm focus:outline-none"
+          className="border rounded-md px-3 py-2 text-sm bg-white shadow-sm"
         >
           <option value="">All Departments</option>
           {departments.map((dept) => (
@@ -183,11 +158,10 @@ export const LeaveAdmin = () => {
           ))}
         </select>
 
-        {/* Status Filter */}
         <select
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value)}
-          className="border rounded-md px-3 py-2 text-sm bg-white shadow-sm focus:outline-none"
+          className="border rounded-md px-3 py-2 text-sm bg-white shadow-sm"
         >
           <option value="">All Status</option>
           <option value="Approved">Approved</option>
@@ -195,7 +169,6 @@ export const LeaveAdmin = () => {
           <option value="Pending">Pending</option>
         </select>
 
-        {/* Clear Filters Button */}
         {(selectedCompany || selectedDepartment || selectedStatus) && (
           <button
             onClick={() => {
@@ -211,11 +184,9 @@ export const LeaveAdmin = () => {
       </div>
 
       {/* Leave Table */}
-      <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-lg border border-gray-200 bg-white shadow-sm overflow-hidden relative">
         {filteredLeaves.length === 0 ? (
-          <p className="p-6 text-center text-gray-500">
-            No leave requests found.
-          </p>
+          <p className="p-6 text-center text-gray-500">No leave requests found.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full text-sm">
@@ -228,7 +199,7 @@ export const LeaveAdmin = () => {
                   <th className="p-3 text-left font-semibold">Start Date</th>
                   <th className="p-3 text-left font-semibold">End Date</th>
                   <th className="p-3 text-left font-semibold">Status</th>
-                  <th className="p-3 text-center font-semibold">Action</th>
+                  <th className="p-3 text-center font-semibold">Actions</th>
                 </tr>
               </thead>
 
@@ -242,15 +213,10 @@ export const LeaveAdmin = () => {
                       : null;
 
                   return (
-                    <tr
-                      key={leave._id}
-                      className="hover:bg-gray-50 transition-colors"
-                    >
+                    <tr key={leave._id} className="hover:bg-gray-50 transition-colors">
                       <td className="p-3">{emp?.fullName || "—"}</td>
                       <td className="p-3">{emp?.department || "—"}</td>
-                      <td className="p-3 text-gray-700">
-                        {comp?.companyName || "—"}
-                      </td>
+                      <td className="p-3 text-gray-700">{comp?.companyName || "—"}</td>
                       <td className="p-3 font-medium">{leave.leaveType}</td>
                       <td className="p-3 text-gray-700">
                         {new Date(leave.startDate).toLocaleDateString()}
@@ -270,25 +236,32 @@ export const LeaveAdmin = () => {
                         {leave.status}
                       </td>
                       <td className="p-3 text-center space-x-2">
-                        {leave.status === "Pending" ? (
+                        {/* 👁 View Button */}
+                        <button
+                          onClick={() => handleView(leave)}
+                          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition"
+                          title="View Reason"
+                        >
+                          <FaEye className="w-4 h-4" />
+                        </button>
+
+                        {leave.status === "Pending" && (
                           <>
                             <button
                               onClick={() => handleAction(leave._id, "Approved")}
-                              className="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600 transition"
+                              className="bg-green-500 text-white p-2 rounded-md hover:bg-green-600 transition"
+                              title="Approve"
                             >
-                              Approve
+                              <Check className="w-4 h-4" />
                             </button>
                             <button
                               onClick={() => handleAction(leave._id, "Rejected")}
-                              className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
+                              className="bg-red-500 text-white p-2 rounded-md hover:bg-red-600 transition"
+                              title="Reject"
                             >
-                              Reject
+                              <X className="w-4 h-4" />
                             </button>
                           </>
-                        ) : (
-                          <span className="text-gray-500 italic">
-                            Action taken
-                          </span>
                         )}
                       </td>
                     </tr>
@@ -299,6 +272,47 @@ export const LeaveAdmin = () => {
           </div>
         )}
       </div>
+
+      {/* 🟦 Inline Modal (Subtle popup) */}
+      {showModal && selectedLeave && (
+        <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg w-[380px] p-5 z-10">
+          <h2 className="text-lg text-center font-semibold mb-5 text-gray-800">Leave Details</h2>
+          <p className="pb-2">
+            <strong className="text-green-600 font-xl font-bold">Type:</strong> {selectedLeave.leaveType}
+          </p>
+          <p>
+            <strong className="text-red-600 font-xl font-bold">Duration:</strong>{" "}
+            {new Date(selectedLeave.startDate).toLocaleDateString()} →{" "}
+            {new Date(selectedLeave.endDate).toLocaleDateString()}
+          </p>
+          <p className="mt-2">
+            <strong>Reason:</strong> {selectedLeave.reason || "—"}
+          </p>
+          <p className="mt-2">
+            <strong>Status:</strong>{" "}
+            <span
+              className={
+                selectedLeave.status === "Approved"
+                  ? "text-green-600 font-xl font-bold"
+                  : selectedLeave.status === "Rejected"
+                  ? "text-red-600 font-xl font-bold"
+                  : "text-yellow-600 font-xl font-bold"
+              }
+            >
+              {selectedLeave.status}
+            </span>
+          </p>
+
+          <div className="mt-7 text-center">
+            <button
+              onClick={() => setShowModal(false)}
+              className="px-4 py-2 bg-red-600 text-white font-semibold font-lg rounded-md hover:bg-red-700"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

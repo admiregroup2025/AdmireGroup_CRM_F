@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaEye } from "react-icons/fa";
 
 export const LeavePage = () => {
   const [leaveData, setLeaveData] = useState({
@@ -13,6 +14,7 @@ export const LeavePage = () => {
   });
 
   const [myLeaves, setMyLeaves] = useState([]);
+  const [selectedLeave, setSelectedLeave] = useState(null); // 👁️ Selected leave for popup
 
   // 🔹 Fetch employee's leave history
   const fetchMyLeaves = async () => {
@@ -56,7 +58,7 @@ export const LeavePage = () => {
   };
 
   return (
-    <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8">
+    <div className="max-h-[85vh] overflow-y-auto bg-[#f8f9fa] p-8 relative">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -75,6 +77,7 @@ export const LeavePage = () => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {/* Leave Type */}
             <div>
               <label className="block text-gray-700 font-medium mb-1">
                 Leave Type
@@ -94,22 +97,24 @@ export const LeavePage = () => {
               </select>
             </div>
 
+            {/* Reason (Textarea) */}
             <div>
               <label className="block text-gray-700 font-medium mb-1">
                 Reason
               </label>
-              <input
-                type="text"
+              <textarea
                 name="reason"
                 value={leaveData.reason}
                 onChange={handleChange}
-                placeholder="Reason for leave"
-                className="border border-gray-300 p-2 w-full rounded-md focus:ring-2 focus:ring-blue-500"
+                placeholder="Describe reason for leave..."
+                rows={3}
+                className="border border-gray-300 p-2 w-full rounded-md focus:ring-2 focus:ring-blue-500 resize-none"
                 required
               />
             </div>
           </div>
 
+          {/* Dates */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-gray-700 font-medium mb-1">
@@ -164,6 +169,7 @@ export const LeavePage = () => {
                 <th className="p-3 text-left font-semibold">End Date</th>
                 <th className="p-3 text-left font-semibold">Status</th>
                 <th className="p-3 text-left font-semibold">Admin Remark</th>
+                <th className="p-3 text-center font-semibold">View</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -194,12 +200,21 @@ export const LeavePage = () => {
                     <td className="p-3 text-gray-700">
                       {leave.adminRemark || "—"}
                     </td>
+                    <td className="p-3 text-center">
+                      <button
+                        onClick={() => setSelectedLeave(leave)}
+                        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition"
+                        title="View Reason"
+                      >
+                        <FaEye className="w-4 h-4" />
+                      </button>
+                    </td>
                   </tr>
                 ))
               ) : (
                 <tr>
                   <td
-                    colSpan="5"
+                    colSpan="6"
                     className="p-4 text-center text-gray-500 italic"
                   >
                     No leave records found.
@@ -210,6 +225,58 @@ export const LeavePage = () => {
           </table>
         </div>
       </div>
+
+      {/* 👁️ Subtle Reason Popup */}
+    {/* 👁️ Leave Details Popup (clean white modal) */}
+{selectedLeave && (
+  <div className="absolute inset-0 flex items-center justify-center bg-transparent z-50">
+    <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200 w-[90%] sm:w-[420px] animate-scale-in">
+      <h2 className="text-xl font-semibold mb-4 text-gray-900 text-center">
+        Leave Details
+      </h2>
+
+      <div className="space-y-2 text-gray-800">
+        <p>
+          <strong className="text-green-600">Type:</strong>{" "}
+          {selectedLeave.leaveType}
+        </p>
+        <p>
+          <strong className="text-red-600">Duration:</strong>{" "}
+          {new Date(selectedLeave.startDate).toLocaleDateString()} →{" "}
+          {new Date(selectedLeave.endDate).toLocaleDateString()}
+        </p>
+        <p>
+          <strong className="text-gray-800">Reason:</strong>{" "}
+          {selectedLeave.reason || "—"}
+        </p>
+        <p>
+          <strong>Status:</strong>{" "}
+          <span
+            className={
+              selectedLeave.status === "Approved"
+                ? "text-green-600 font-semibold"
+                : selectedLeave.status === "Rejected"
+                ? "text-red-600 font-semibold"
+                : "text-yellow-600 font-semibold"
+            }
+          >
+            {selectedLeave.status}
+          </span>
+        </p>
+      </div>
+
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={() => setSelectedLeave(null)}
+          className="bg-red-600 text-white px-5 py-2 rounded-md hover:bg-red-700 transition"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
