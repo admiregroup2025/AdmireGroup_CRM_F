@@ -379,7 +379,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ScreenLayout from "./newComponents/ScreenLayout.jsx";
 import MainDashboard from "./newComponents/dashboard/MainDashboard.jsx";
 import MainLeadManagement from "./newComponents/leadManagement/MainLeadManagement.jsx";
-import MainUserManagement from "./newComponents/UserManagement/MainUserManagement.jsx";
+import MainUserManagement from "./newComponents/userManagement/MainUserManagement.jsx";
 import MainAttendance from "./newComponents/attendance/MainAttendance.jsx";
 import MainAllCompanies from "./newComponents/allCompanies/MainAllCompanies.jsx";
 import MainSettings from "./newComponents/Settings/MainSettings.jsx";
