@@ -3,7 +3,7 @@ import Modal from "./Modal.jsx";
 import axios from "axios";
 
 const ROLES = ["Admin", "Employee"];
-const DEPARTMENTS = ["IT", "Sales", "Marketing", "Engineering", "HR", "Finance"];
+const DEPARTMENTS = ["IT", "Sales", "Digital Marketing", "Legal", "HR", "Accounts","Operations"];
 
 const AddUser = () => {
   const [isOpen, setIsOpen] = useState(false);
