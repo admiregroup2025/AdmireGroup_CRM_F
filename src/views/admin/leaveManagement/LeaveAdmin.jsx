@@ -30,17 +30,20 @@ export const LeaveAdmin = () => {
     }
   };
 
-  // ✅ Fetch all leaves
+  // ✅ Fetch all leaves, employees, and companies
   const fetchLeaves = async () => {
     try {
       const res = await axios.get("http://localhost:4000/admin/all-leaves");
       const leaveData = res.data?.leaves || res.data;
       setLeaves(leaveData);
 
+      // 🧠 Fetch employee details
       const employeePromises = leaveData.map(async (leave) => {
         const empId = leave.employeeId?._id || leave.employeeId;
         if (!empId) return null;
-        const empRes = await axios.get(`http://localhost:4000/employee/getEmployee/${empId}`);
+        const empRes = await axios.get(
+          `http://localhost:4000/employee/getEmployee/${empId}`
+        );
         return { empId, data: empRes.data.employee };
       });
 
@@ -48,13 +51,22 @@ export const LeaveAdmin = () => {
       const empDataMap = {};
       const companyIds = new Set();
 
+      // 🧩 Map employee and extract valid company IDs
       employeeResults.forEach((item) => {
         if (item) {
           empDataMap[item.empId] = item.data;
-          if (item.data?.company) companyIds.add(item.data.company);
+
+          // ✅ FIX: ensure we only add company._id or string ID
+          const companyField = item.data?.company;
+          if (companyField?._id) {
+            companyIds.add(companyField._id);
+          } else if (typeof companyField === "string") {
+            companyIds.add(companyField);
+          }
         }
       });
 
+      // 🏢 Fetch company details using proper ObjectId strings
       const companyPromises = [...companyIds].map(async (companyId) => {
         const compRes = await axios.get(`http://localhost:4000/company/${companyId}`);
         return { companyId, data: compRes.data.company };
@@ -102,12 +114,13 @@ export const LeaveAdmin = () => {
     setShowModal(true);
   };
 
+  // ✅ Filter by company, department, status
   const filteredLeaves = leaves.filter((leave) => {
     const empId = leave.employeeId?._id || leave.employeeId;
     const emp = employeeDetails[empId];
     const comp =
-      emp?.company && companyDetails[emp.company]
-        ? companyDetails[emp.company]
+      emp?.company && companyDetails[emp.company?._id || emp.company]
+        ? companyDetails[emp.company?._id || emp.company]
         : null;
 
     const matchesCompany = !selectedCompany || comp?._id === selectedCompany;
@@ -208,8 +221,8 @@ export const LeaveAdmin = () => {
                   const empId = leave.employeeId?._id || leave.employeeId;
                   const emp = employeeDetails[empId];
                   const comp =
-                    emp?.company && companyDetails[emp.company]
-                      ? companyDetails[emp.company]
+                    emp?.company && companyDetails[emp.company?._id || emp.company]
+                      ? companyDetails[emp.company?._id || emp.company]
                       : null;
 
                   return (
@@ -273,12 +286,15 @@ export const LeaveAdmin = () => {
         )}
       </div>
 
-      {/* 🟦 Inline Modal (Subtle popup) */}
+      {/* 🟦 Inline Modal */}
       {showModal && selectedLeave && (
         <div className="absolute top-10 left-1/2 transform -translate-x-1/2 bg-white border border-gray-200 rounded-lg shadow-lg w-[380px] p-5 z-10">
-          <h2 className="text-lg text-center font-semibold mb-5 text-gray-800">Leave Details</h2>
+          <h2 className="text-lg text-center font-semibold mb-5 text-gray-800">
+            Leave Details
+          </h2>
           <p className="pb-2">
-            <strong className="text-green-600 font-xl font-bold">Type:</strong> {selectedLeave.leaveType}
+            <strong className="text-green-600 font-xl font-bold">Type:</strong>{" "}
+            {selectedLeave.leaveType}
           </p>
           <p>
             <strong className="text-red-600 font-xl font-bold">Duration:</strong>{" "}

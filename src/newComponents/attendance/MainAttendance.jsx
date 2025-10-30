@@ -16,7 +16,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Attendance from "../attendance/Attendence.jsx";
 import EmployeeTable from "./EmployeeTable.jsx";
 import SearchEmployes from "./SearchEmployes.jsx";
-import AllStatus from "./AllStatus.jsx";
+// import AllStatus from "./AllStatus.jsx";
 
 const MainAttendance = () => {
   const employeeId = localStorage.getItem("userId");
@@ -234,7 +234,7 @@ const MainAttendance = () => {
       <div>
         <div className="flex justify-between py-5">
           <SearchEmployes />
-          <AllStatus />
+          {/* <AllStatus /> */}
           <div className="flex items-center gap-2 text-gray-700">
             <CalendarIcon size={20} className="text-gray-500" />
             <span className="text-sm">{formattedDate}</span>
