@@ -22,7 +22,7 @@ const SignIn = () => {
     if (tokenExpiry && new Date().getTime() > tokenExpiry) {
       // Token expired
       localStorage.clear();
-      navigate("/login");
+      navigate("/");
     }
   }, [navigate]);
 

@@ -100,7 +100,7 @@ const Modal = ({
     >
       <div
         ref={modalRef}
-        className={`bg-white rounded-lg shadow-2xl w-full ${maxWidth} max-h-[90vh] overflow-y-auto relative`}
+        className={`bg-white rounded-lg shadow-2xl w-full ${maxWidth} max-h-[100vh] overflow-y-hidden relative`}
         onClick={(e) => e.stopPropagation()}
         onKeyDown={handleKeyDown}
         tabIndex={-1}

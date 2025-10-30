@@ -19,6 +19,7 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
     try {
       const response = await fetch("http://localhost:4000/leads");
       const result = await response.json();
+      console.log(result)
       if (result.success) {
         setLeads(result.data || result);
       } else {
@@ -163,36 +164,81 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
   };
 
   // 🧱 Edit Modal
-  const EditModal = ({ lead, onClose, onSave }) => {
-    const [formData, setFormData] = useState({ ...lead });
+ // Edit Modal (UI same as Add Lead)
 
-    const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData((prev) => ({ ...prev, [name]: value }));
-    };
 
-    const handleSubmit = (e) => {
-      e.preventDefault();
-      onSave(formData);
-    };
+const EditModal = ({ lead, onClose, onSave }) => {
+  const [formData, setFormData] = useState({ ...lead });
 
-    if (!lead) return null;
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-          <h2 className="mb-4 text-lg font-semibold">Edit Lead</h2>
-          <form onSubmit={handleSubmit} className="space-y-3">
-            {["name", "email", "phone", "company", "value"].map((field) => (
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSave(formData);
+  };
+
+  if (!lead) return null;
+
+  const textFields = [
+    "name",
+    "email",
+    "phone",
+    "whatsAppNo",
+    "company",
+    "value",
+    "departureCity",
+    "destination",
+    "noOfDays",
+    "noOfPerson",
+    "noOfChild",
+    "childAge",
+    "placesToCover",
+    "groupNumber"
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+      <div className="w-full max-w-3xl rounded-lg bg-white p-6 shadow-xl overflow-y-auto max-h-[90vh]">
+        <h2 className="mb-4 text-lg font-semibold text-center">Edit Lead</h2>
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Optional Group Number (Edit Only) */}
+          <div className="flex flex-col sm:col-span-2">
+            <label className="mb-1 text-sm font-medium">Group Number </label>
+            <input
+              type="text"
+              name="groupNumber"
+              value={formData.groupNumber || ""}
+              onChange={handleChange}
+              placeholder="Enter Group Number"
+              className="w-full rounded border px-3 py-2"
+            />
+          </div>
+
+          {/* Text Inputs */}
+          {textFields.map((field) => (
+            <div key={field} className="flex flex-col">
+              <label className="mb-1 text-sm font-medium">
+                {field.replace(/([A-Z])/g, " $1").replace(/^./, (str) => str.toUpperCase())}
+              </label>
               <input
-                key={field}
                 name={field}
                 value={formData[field] || ""}
                 onChange={handleChange}
-                placeholder={field.charAt(0).toUpperCase() + field.slice(1)}
+                placeholder={field
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (str) => str.toUpperCase())}
                 className="w-full rounded border px-3 py-2"
               />
-            ))}
+            </div>
+          ))}
+
+          {/* Dropdowns */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Lead Status</label>
             <select
               name="leadStatus"
               value={formData.leadStatus || "Cold"}
@@ -203,56 +249,141 @@ const LeadTable = ({ searchText = "", selectedStatus = "All Status", refreshTrig
               <option value="Warm">Warm</option>
               <option value="Cold">Cold</option>
             </select>
-            <div className="flex justify-end gap-2 pt-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="rounded bg-gray-200 px-4 py-2"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="rounded bg-blue-500 px-4 py-2 text-white"
-              >
-                Save
-              </button>
-            </div>
-          </form>
-        </div>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Lead Source</label>
+            <select
+              name="leadSource"
+              value={formData.leadSource || ""}
+              onChange={handleChange}
+              className="w-full rounded border px-3 py-2"
+            >
+              <option value="">Select Source</option>
+              <option value="Referral">Referral</option>
+              <option value="Website">Website</option>
+              <option value="Social Media">Social Media</option>
+              <option value="Advertisement">Advertisement</option>
+            </select>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Lead Type</label>
+            <select
+              name="leadType"
+              value={formData.leadType || ""}
+              onChange={handleChange}
+              className="w-full rounded border px-3 py-2"
+            >
+              <option value="">Select Type</option>
+              <option value="Individual">Individual</option>
+              <option value="Corporate">Corporate</option>
+            </select>
+          </div>
+
+          {/* Date */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Expected Travel Date</label>
+            <input
+              type="date"
+              name="expectedTravelDate"
+              value={formData.expectedTravelDate?.split("T")[0] || ""}
+              onChange={handleChange}
+              className="w-full rounded border px-3 py-2"
+            />
+          </div>
+
+          {/* Notes */}
+          <div className="flex flex-col sm:col-span-2">
+            <label className="mb-1 text-sm font-medium">Notes</label>
+            <textarea
+              name="notes"
+              value={formData.notes || ""}
+              onChange={handleChange}
+              placeholder="Notes"
+              className="w-full rounded border px-3 py-2"
+            />
+          </div>
+
+          {/* Buttons */}
+          <div className="sm:col-span-2 mt-4 flex justify-end gap-2">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded bg-gray-200 px-4 py-2"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="rounded bg-blue-500 px-4 py-2 text-white"
+            >
+              Save
+            </button>
+          </div>
+        </form>
       </div>
-    );
-  };
+    </div>
+  );
+};
+
+
+
+
+// export default EditModal;
+
 
   // 👁 Read-only View Modal
   const ViewModal = ({ lead, onClose }) => {
-    if (!lead) return null;
-    return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-          <h2 className="mb-4 text-lg font-semibold text-center">Lead Details</h2>
-          <div className="space-y-2 text-gray-800">
-            <p><strong>Name:</strong> {lead.name}</p>
-            <p><strong>Email:</strong> {lead.email}</p>
-            <p><strong>Phone:</strong> {lead.phone}</p>
-            <p><strong>Company:</strong> {lead.company}</p>
-            <p><strong>Lead Status:</strong> {lead.leadStatus}</p>
-            <p><strong>Value:</strong> {lead.value}</p>
-            <p><strong>Last Contact:</strong> {new Date(lead.lastContact).toLocaleDateString()}</p>
-            <p><strong>Created At:</strong> {new Date(lead.createdAt).toLocaleDateString()}</p>
-          </div>
-          <div className="mt-6 flex justify-center">
-            <button
-              onClick={onClose}
-              className="rounded bg-red-500 px-5 py-2 text-white hover:bg-red-600 transition"
-            >
-              Close
-            </button>
-          </div>
+  if (!lead) return null;
+
+  const formatDate = (date) => new Date(date).toLocaleDateString();
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+      <div className="w-full max-w-lg rounded-lg bg-white p-6 shadow-xl overflow-y-auto max-h-[90vh]">
+        <h2 className="mb-4 text-lg font-semibold text-center text-gray-800">
+          Lead Details
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-800">
+          <p><strong>Name:</strong> {lead.name}</p>
+          <p><strong>Email:</strong> {lead.email}</p>
+          <p><strong>Phone:</strong> {lead.phone}</p>
+          <p><strong>WhatsApp No:</strong> {lead.whatsAppNo}</p>
+          <p><strong>Company:</strong> {lead.company}</p>
+          <p><strong>Lead Source:</strong> {lead.leadSource}</p>
+          <p><strong>Lead Type:</strong> {lead.leadType}</p>
+          <p><strong>Lead Status:</strong> {lead.leadStatus}</p>
+          <p><strong>Value:</strong> ${lead.value}</p>
+          <p><strong>Departure City:</strong> {lead.departureCity}</p>
+          <p><strong>Destination:</strong> {lead.destination}</p>
+          <p><strong>Expected Travel:</strong> {formatDate(lead.expectedTravelDate)}</p>
+          <p><strong>No. of Days:</strong> {lead.noOfDays}</p>
+          <p><strong>No. of Persons:</strong> {lead.noOfPerson}</p>
+          <p><strong>No. of Children:</strong> {lead.noOfChild}</p>
+          <p><strong>Group Number:</strong>{lead.groupNumber}</p>
+          <p><strong>Child Age:</strong> {lead.childAge}</p>
+          <p><strong>Places to Cover:</strong> {lead.placesToCover}</p>
+          <p><strong>Last Contact:</strong> {formatDate(lead.lastContact)}</p>
+          <p><strong>Created At:</strong> {formatDate(lead.createdAt)}</p>
+          <p><strong>Updated At:</strong> {formatDate(lead.updatedAt)}</p>
+          <p className="sm:col-span-2"><strong>Notes:</strong> {lead.notes}</p>
+        </div>
+
+        <div className="mt-6 flex justify-center">
+          <button
+            onClick={onClose}
+            className="rounded bg-red-500 px-5 py-2 text-white hover:bg-red-600 transition"
+          >
+            Close
+          </button>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
+};
+
 
   const SortableHeader = ({ column, children }) => (
     <th
